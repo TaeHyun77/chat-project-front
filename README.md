@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # chat-project-front
 채팅 프로젝트 react 프론트
 =======
@@ -73,3 +74,6 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 >>>>>>> 75ca0ce (Initialize project using Create React App)
+=======
+#chat-project-front
+>>>>>>> 807eecdf59dc4dc92374f1d97bb73cb0224ef5da
