@@ -1,0 +1,61 @@
+/* 전체 헤더 스타일 */
+.headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    background-color: #1c1c1c;
+    color: white;
+  }
+  
+  /* 로고 이미지 */
+  .LckLogoImg {
+    height: 40px;
+  }
+  
+  /* 로그인/로그아웃 버튼 컨테이너 */
+  .logContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  /* 로그인 및 로그아웃 버튼 공통 스타일 */
+  .loginButton,
+  .logoutButton {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+  }
+  
+  /* 로그인 버튼 */
+  .loginButton {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .loginButton:hover {
+    background-color: #0056b3;
+  }
+  
+  /* 로그아웃 버튼 */
+  .logoutButton {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .logoutButton:hover {
+    background-color: #a71d2a;
+  }
+  
+  /* 로그인한 사용자 이름 */
+  .loginName {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  

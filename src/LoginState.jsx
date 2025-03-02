@@ -8,8 +8,6 @@ const LoginState = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false);
   const [roles, setRoles] = useState({ isUser: false, isAdmin: false });
   const [userInfo, setUserInfo] = useState({});
-  const [isShowingPrefered, setIsShowingPrefered] = useState(false);
-
 
   const logincheck = async () => {
 
@@ -22,7 +20,6 @@ const LoginState = ({ children }) => {
         return;
     }
 
-    // 모든 api 요청의 request에 authorization 헤더를 담음
     api.defaults.headers.common.authorization = `Bearer ${accessToken}`;
 
     let response;
@@ -48,12 +45,12 @@ const LoginState = ({ children }) => {
   };
 
   const loginSetting = (userData, accessToken) => {
-    const { username, role, name, email, teamNames, notificationPermission} = userData;
+    const { username, name, email, role} = userData;
 
     api.defaults.headers.common["authorization"] = `Bearer ${accessToken}`;
     setIsLogin(true);
 
-    setUserInfo({ username, role, name, email, teamNames, notificationPermission});
+    setUserInfo({ username, name, email, role});
   };
 
   const logout = () => {
@@ -69,7 +66,7 @@ const LoginState = ({ children }) => {
 
   return (
     <LoginContext.Provider
-      value={{ isLogin, setIsLogin, userInfo, roles, logincheck, setUserInfo, isShowingPrefered, setIsShowingPrefered}}
+      value={{ isLogin, setIsLogin, userInfo, roles, logincheck, setUserInfo}}
     >
       {children}
     </LoginContext.Provider>
