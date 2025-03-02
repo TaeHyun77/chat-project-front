@@ -1,20 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
+import { LoginContext } from "./LoginState";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import Cookies from "js-cookie";
 import "./Home.css";
+import Header from "./Header";
 
 const SOCKET_URL = "http://localhost:8080/ws";
 
 function Home() {
+  const { userInfo } = useContext(LoginContext);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [sessionId, setSessionId] = useState("");
+  const [accessToken, setAccessToken] = useState("");
   const stompClientRef = useRef(null);
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
 
   useEffect(() => {
     const socket = new SockJS(SOCKET_URL);
+    const token = Cookies.get("authorization");
+    console.log(token);
+    setAccessToken(token);
 
     const stompClient = new Client({
       webSocketFactory: () => socket,
@@ -22,11 +29,6 @@ function Home() {
 
       onConnect: () => {
         console.log("[STOMP] 연결 성공: ", stompClient);
-
-        // 세션 ID 가져오기, 세션 ID는 URL의 뒤에서 두 번째 부분에 위치
-        const sessionId = socket._transport.url.split("/").slice(-2, -1)[0];
-        setSessionId(sessionId);
-        console.log("Session ID:", sessionId);
 
         // 클라이언트가 보낸 메시지를 다시 서버에서 받아오는 부분
         stompClient.subscribe("/topic/chat", (message) => {
@@ -71,7 +73,17 @@ function Home() {
     )
       return;
 
-    const newMessage = { content: message, sessionId: sessionId}; // sender 정보 추가
+    const now = new Date();
+    const formattedTime = now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const newMessage = {
+      content: message,
+      accessToken: `Bearer ${accessToken}`,
+      timestamp: formattedTime,
+    };
 
     stompClientRef.current.publish({
       destination: "/app/chat",
@@ -89,38 +101,50 @@ function Home() {
   };
 
   return (
-    <div className="chat-container">
-      <div className="chat-box">
-        <div className="chat-header">Simple Chat</div>
+    <>
+      <Header />
+      <div className="chat-container">
+        <div className="chat-box">
+          <div className="chat-header">Simple Chat</div>
 
-        <div ref={chatContainerRef} className="chat-messages">
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`chat-message ${msg.sessionId === sessionId ? "mine" : "other"}`} // 세션 ID 비교
+          <div ref={chatContainerRef} className="chat-messages">
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`chat-message ${msg.username === userInfo?.username ? "mine" : "other"}`}
+              >
+                <div className="message-wrapper">
+                  <div className="message-username">{msg.username}</div>
+                  <div className="message-content">{msg.content}</div>
+                  <div
+                    className={`message-timestamp ${
+                      msg.username === userInfo?.username ? "mine-timestamp" : "other-timestamp"
+                    }`}
+                  >
+                    {msg.timestamp}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
 
-            >
-              <div className="message-content">{msg.content}</div>
-            </div>
-          ))}
-        </div>
-
-        <div className="chat-input-container">
-          <input
-            ref={inputRef}
-            type="text"
-            className="chat-input"
-            placeholder="메시지를 입력하세요..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyPress}
-          />
-          <button className="chat-send-button" onClick={sendMessage}>
-            전송
-          </button>
+          <div className="chat-input-container">
+            <input
+              ref={inputRef}
+              type="text"
+              className="chat-input"
+              placeholder="메시지를 입력하세요..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            />
+            <button className="chat-send-button" onClick={sendMessage}>
+              전송
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
