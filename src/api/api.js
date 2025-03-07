@@ -60,7 +60,7 @@ api.interceptors.response.use(
         originalRequest.headers.authorization = `Bearer ${newAccessToken}`;
 
         // access token이 재발급 되면 이전에 실패한 요청을 다시 보냄
-        return axios(originalRequest);
+        return api(originalRequest);
       } catch (err) {
         console.error(
           "Refresh token이 만료되었거나 오류가 발생했습니다. 로그아웃 처리 필요."

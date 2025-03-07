@@ -11,8 +11,6 @@ const Header = () => {
   const { isLogin, setIsLogin, userInfo, setUserInfo, logincheck } = useContext(LoginContext);
   const navigate = useNavigate();
 
-  console.log("로그인 상태 : " + isLogin);
-
   // Google 로그인
   const onGoogleLogin = async () => {
     try {
@@ -53,6 +51,10 @@ const Header = () => {
   useEffect(() => {
     logincheck();
   }, []);
+
+  useEffect(() => {
+    console.log("로그인 상태 : " + isLogin);
+  }, [isLogin]);
 
   return (
     <header>
