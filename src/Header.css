@@ -1,61 +1,86 @@
 /* 전체 헤더 스타일 */
+@font-face {
+  font-family: "Ownglyph_ParkDaHyun";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
 .headerContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 60px;
-    padding: 0 20px;
-    background-color: #1c1c1c;
-    color: white;
-  }
-  
-  /* 로고 이미지 */
-  .LckLogoImg {
-    height: 40px;
-  }
-  
-  /* 로그인/로그아웃 버튼 컨테이너 */
-  .logContainer {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  /* 로그인 및 로그아웃 버튼 공통 스타일 */
-  .loginButton,
-  .logoutButton {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: 0.3s;
-  }
-  
-  /* 로그인 버튼 */
-  .loginButton {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .loginButton:hover {
-    background-color: #0056b3;
-  }
-  
-  /* 로그아웃 버튼 */
-  .logoutButton {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  .logoutButton:hover {
-    background-color: #a71d2a;
-  }
-  
-  /* 로그인한 사용자 이름 */
-  .loginName {
-    font-size: 14px;
-    font-weight: bold;
-  }
-  
+  display: flex;
+  justify-content: space-between; /* 양쪽 끝 정렬 */
+  align-items: center;
+  width: 80%;
+  height: 150px;
+  background-color: white;
+  color: black; /* 글자 색 변경 */
+  padding: 0 20px;
+  border-radius: 20px;
+  margin: 0 auto;
+  margin-top: 10px;
+}
+
+/* 로고와 텍스트를 나란히 정렬 */
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 로고와 텍스트 간격 */
+}
+
+.logoContainer p {
+  font-family: "Ownglyph_ParkDaHyun";
+  font-size: 30px;
+}
+
+/* 로고 크기 조정 */
+.logo {
+  width: 150px; /* 원하는 크기로 조절 */
+  height: auto;
+}
+
+/* 로그인/로그아웃 버튼 컨테이너 */
+.logContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 로그인 및 로그아웃 버튼 공통 스타일 */
+.loginButton,
+.logoutButton {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+  width: 150px;
+  height: 50px;
+}
+
+/* 로그인 버튼 */
+.loginButton {
+  background-color: #007bff;
+  color: white;
+}
+
+.loginButton:hover {
+  background-color: #0056b3;
+}
+
+/* 로그아웃 버튼 */
+.logoutButton {
+  background-color: #dc3545;
+  color: white;
+}
+
+.logoutButton:hover {
+  background-color: #a71d2a;
+}
+
+/* 로그인한 사용자 이름 */
+.loginName {
+  font-size: 14px;
+  font-weight: bold;
+}

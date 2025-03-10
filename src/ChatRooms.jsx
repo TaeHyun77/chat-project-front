@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "./LoginState";
-
 import api from "./api/api";
 import Header from "./Header";
 import "./ChatRooms.css";
@@ -12,6 +11,7 @@ const ChatRooms = () => {
   const [rooms, setRooms] = useState([]);
   const [newRoomName, setNewRoomName] = useState("");
   const navigate = useNavigate();
+
 
   const selectRooms = async () => {
     try {
@@ -26,21 +26,21 @@ const ChatRooms = () => {
   const createRoom = async () => {
     if (!window.confirm("채팅방을 생성하시겠습니까?")) return;
     if (!isLogin) return alert("로그인이 필요합니다!"), setNewRoomName("");
-
+  
     const trimmedName = newRoomName.trim();
     if (!trimmedName) return;
-
+  
     try {
       const response = await api.post("http://localhost:8080/chat/room", {
         chatRoomName: trimmedName,
         creator: userInfo?.username,
       });
-
+  
       console.log("새로운 채팅방:", response.data);
-
+  
       setRooms((prev) => [...prev, response.data]); // 상태 업데이트
       setNewRoomName("");
-
+  
       await selectRooms(); // 방을 다시 불러와 최신 상태 유지
     } catch (error) {
       console.error("채팅방 생성 오류:", error);
