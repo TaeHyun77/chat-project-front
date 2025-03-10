@@ -40,7 +40,7 @@ const Header = () => {
           alert("로그아웃 성공!");
           setIsLogin(false);
           setUserInfo(null);
-          navigate("/");
+          navigate("/home");
         } else {
           console.error("로그아웃 실패");
         }
@@ -72,7 +72,7 @@ const Header = () => {
         </div>
       ) : (
         <div className="logContainer">
-          <p className="loginName">{userInfo?.email} 님</p>
+          <p className="loginName">{userInfo?.name} 님</p>
           <button onClick={googleLogout} className="logoutButton">
             로그아웃
           </button>

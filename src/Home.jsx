@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { LoginContext } from "./LoginState";
-import api from "./api/api";
+import { FuncModule } from "./FuncList";
+
 import {
   LineChart,
   Line,
@@ -18,37 +17,25 @@ import Header from "./Header";
 import Footer from "./Footer";
 
 const Home = () => {
+  const {
+    getFormattedDate,
+    getTomorrowDate,
+    get2LaterDate,
+    formatDateTime,
+    formatDateTime2,
+    calculateDelay,
+    getCongestionLevel,
+  } = useContext(FuncModule);
+
   const [departureData, setDepartureDataList] = useState([]);
   const [filteredToday, setFilteredToday] = useState([]);
   const [filteredNext, setFilteredNext] = useState([]);
   const [planeList, setPlaneList] = useState([]);
   const [selectedLines, setSelectedLines] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const getFormattedDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    return `${year}${month}${day}`;
-  };
-
-  const getTomorrowDate = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const year = tomorrow.getFullYear();
-    const month = String(tomorrow.getMonth() + 1).padStart(2, "0");
-    const day = String(tomorrow.getDate()).padStart(2, "0");
-    return `${year}${month}${day}`;
-  };
-
-  const get2LaterDate = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 2);
-    const year = tomorrow.getFullYear();
-    const month = String(tomorrow.getMonth() + 1).padStart(2, "0");
-    const day = String(tomorrow.getDate()).padStart(2, "0");
-    return `${year}${month}${day}`;
-  };
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDateList, setSelectedDateList] = useState(filteredToday);
 
   const getDepartureData = async () => {
     try {
@@ -82,27 +69,6 @@ const Home = () => {
     }
   };
 
-  const toggleSelection = (key) => {
-    setSelectedLines(
-      (prev) => (prev.includes(key) ? [] : [key]) // 배열에 하나만 들어가게끔 설정
-    );
-  };
-
-  const getCongestionLevel = (value, data, index) => {
-    // 2시간 지속 체크
-    const prev1 = index > 0 ? data[index - 1].totalDepartures : 0;
-    const prev2 = index > 1 ? data[index - 2].totalDepartures : 0;
-    const is2HoursAbove7600 = prev1 > 7600 && prev2 > 7600;
-    const is2HoursAbove8200 = prev1 > 8200 && prev2 > 8200;
-
-    if (value < 7000) return "원활";
-    if (value <= 7600) return "보통";
-    if (value <= 8200) return "약간 혼잡";
-    if (value <= 8600 || is2HoursAbove7600) return "혼잡";
-    if (value > 8600 || is2HoursAbove8200) return "매우 혼잡";
-    return "";
-  };
-
   const lineOptions = [
     { key: "t1Depart12", label: "T1 출발 (1, 2번 게이트)" },
     { key: "t1Depart3", label: "T1 출발 (3번 게이트)" },
@@ -112,14 +78,15 @@ const Home = () => {
     { key: "t2Depart2", label: "T2 출발 (2번 게이트)" },
   ];
 
-  const colors = [
-    "#8884d8",
-    "#82ca9d",
-    "#ff7300",
-    "#00c49f",
-    "#ffbb28",
-    "#ff4444",
-  ];
+  const toggleSelection = (key) => {
+    setSelectedLines(
+      (prev) => (prev.includes(key) ? [] : [key]) // 배열에 하나만 들어가게끔 설정
+    );
+  };
+
+  const filteredFlights = planeList.filter((plane) =>
+    plane.flightId.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     getDepartureData();
@@ -130,12 +97,38 @@ const Home = () => {
     <>
       <Header />
       <div className="container">
-        <h2>출국장 혼잡도</h2>
+        <h2>
+          출국장 예상 혼잡도 <span>( {formatDateTime2(selectedDate)} )</span>
+        </h2>
+        <div className="departure-info">
+          <p style={{ color: "blue" }}>
+            오늘로부터 이틀 간의 데이터를 제공합니다.{" "}
+          </p>
+          <p>7000명 미만 : 원활</p>
+          <p>7001명 ~ 7600명: 보통</p>
+          <p>7601명 ~ 8200명 : 약간 혼잡</p>
+          <p>8201명 ~ 8600명 : 혼잡</p>
+          <p>8601명 이상 : 매우 혼잡</p>
+        </div>
         <div className="chart-section">
           <div className="chart-filters">
             <div className="date-buttons">
-              <button>{getFormattedDate().substring(4)}</button>
-              <button>{getTomorrowDate().substring(4)}</button>
+              <button
+                onClick={() => {
+                  setSelectedDate(getFormattedDate().substring(4));
+                  setSelectedDateList(filteredToday);
+                }}
+              >
+                {formatDateTime2(getFormattedDate().substring(4))}
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedDate(getTomorrowDate().substring(4));
+                  setSelectedDateList(filteredNext);
+                }}
+              >
+                {formatDateTime2(getTomorrowDate().substring(4))}
+              </button>
             </div>
             <div className="place-buttons">
               {lineOptions.map((option) => (
@@ -152,7 +145,7 @@ const Home = () => {
           </div>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart
-              data={filteredToday}
+              data={selectedDateList}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
@@ -165,7 +158,7 @@ const Home = () => {
                 formatter={(value, name, props) => {
                   const congestion = getCongestionLevel(
                     value,
-                    filteredToday,
+                    selectedDateList,
                     props.payload.index
                   );
                   return [`${value}명 (${congestion})`, name];
@@ -177,7 +170,7 @@ const Home = () => {
                   key={key}
                   type="monotone"
                   dataKey={key}
-                  stroke={colors[index % colors.length]}
+                  stroke="blue"
                   name={lineOptions.find((o) => o.key === key)?.label}
                 />
               ))}
@@ -187,31 +180,73 @@ const Home = () => {
       </div>
       <div className="container">
         <h2>
-          {getFormattedDate().substring(4)} ~ {get2LaterDate().substring(4)}{" "}
           항공기 목록{" "}
+          <span>
+            ( {formatDateTime2(getFormattedDate().substring(4))} ~{" "}
+            {formatDateTime2(get2LaterDate().substring(4))} )
+          </span>
         </h2>
+
+        <div className="departure-info">
+          <p style={{ color: "blue" }}>
+            오늘로부터 3일 간의 데이터를 제공합니다.{" "}
+          </p>
+          <p style={{ color: "blue" }}>항공기 상태 값이 업데이트 됩니다.</p>
+        </div>
+
+        <div className="searchContainer">
+          <input
+            type="text"
+            placeholder="항공편 검색"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
         <div className="table-container">
           <div className="data-row header">
             <div>항공편</div>
             <div>항공사</div>
-            <div>일정 출발 시간</div>
-            <div>변경 시간</div>
             <div>탑승구</div>
             <div>터미널</div>
             <div>상태</div>
             <div>항공기 번호</div>
+            <div>시간</div>
           </div>
           <div className="data-body">
-            {planeList.map((plane, index) => (
+            {filteredFlights.map((plane, index) => (
               <div className="data-row" key={index}>
                 <div>{plane.flightId}</div>
                 <div>{plane.airLine}</div>
-                <div>{plane.scheduleDatetime}</div>
-                <div>{plane.estimatedDatetime}</div>
                 <div>{plane.gateNumber}</div>
                 <div>{plane.terminalId}</div>
-                <div>{plane.remark}</div>
+                <div>{plane.remark == "null" ? "대기중" : plane.remark}</div>
                 <div>{plane.aircraftRegNo}</div>
+                <div className="plane-time">
+                  {plane.scheduleDatetime === plane.estimatedDatetime ? (
+                    <>
+                      <p style={{ color: "red" }}>
+                        예정 시간 : {formatDateTime(plane.scheduleDatetime)}
+                      </p>
+                      <p>변경 내역 없음</p>
+                    </>
+                  ) : (
+                    <>
+                      <p style={{ color: "red" }}>
+                        예정 시간 : {formatDateTime(plane.scheduleDatetime)}
+                      </p>
+                      <p style={{ color: "blue" }}>
+                        변경 시간 : {formatDateTime(plane.estimatedDatetime)}
+                      </p>
+                      <p>
+                        {calculateDelay(
+                          plane.scheduleDatetime,
+                          plane.estimatedDatetime
+                        )}
+                      </p>
+                    </>
+                  )}
+                </div>
               </div>
             ))}
           </div>
