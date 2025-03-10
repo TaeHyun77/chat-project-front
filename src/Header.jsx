@@ -5,10 +5,12 @@ import { LoginContext } from "./LoginState";
 import api from "./api/api";
 import axios from "axios";
 import Cookies from "js-cookie";
-import "./Header.css"
+import "./Header.css";
+import inLogo from "./Incheon.png";
 
 const Header = () => {
-  const { isLogin, setIsLogin, userInfo, setUserInfo, logincheck } = useContext(LoginContext);
+  const { isLogin, setIsLogin, userInfo, setUserInfo, logincheck } =
+    useContext(LoginContext);
   const navigate = useNavigate();
 
   // Google 로그인
@@ -57,23 +59,23 @@ const Header = () => {
   }, [isLogin]);
 
   return (
-    <header>
+    <header className="headerContainer">
+      <div className="logoContainer">
+        <img src={inLogo} className="logo" />
+        <p>Travel via Incheon !</p>
+      </div>
       {!isLogin ? (
-        <div className="headerContainer">
-          <div className="logContainer">
-            <button onClick={onGoogleLogin} className="loginButton">
-              Google 로그인
-            </button>
-          </div>
+        <div className="logContainer">
+          <button onClick={onGoogleLogin} className="loginButton">
+            Google 로그인
+          </button>
         </div>
       ) : (
-        <div className="headerContainer">
-          <div className="logContainer">
-            <p className="loginName">{userInfo?.email} 님</p>
-            <button onClick={googleLogout} className="logoutButton">
-              로그아웃
-            </button>
-          </div>
+        <div className="logContainer">
+          <p className="loginName">{userInfo?.email} 님</p>
+          <button onClick={googleLogout} className="logoutButton">
+            로그아웃
+          </button>
         </div>
       )}
     </header>

@@ -1,17 +1,18 @@
-import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./Home";
+import ChatRoomInfo from "./ChatRoomInfo";
 import ChatRooms from "./ChatRooms";
 import LoginState from "./LoginState";
+import Home from "./Home";
 
 function App() {
   return (
     <BrowserRouter>
       <LoginState>
-          <Routes>
-            <Route path="/:roomId" element={<Home />} />
-            <Route path="/" element={<ChatRooms />} />
-          </Routes>
+        <Routes>
+          <Route path="/:roomId" element={<ChatRoomInfo />} />
+          <Route path="/" element={<ChatRooms />} />
+          <Route path="/home" element={<Home />} />
+        </Routes>
       </LoginState>
     </BrowserRouter>
   );

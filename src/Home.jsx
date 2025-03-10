@@ -1,266 +1,225 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { LoginContext } from "./LoginState";
-import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
-import Cookies from "js-cookie";
-import { useParams } from "react-router-dom";
+import api from "./api/api";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import "./Home.css";
-import Header from "./Header";
 import axios from "axios";
+import Header from "./Header";
+import Footer from "./Footer";
 
-const SOCKET_URL = "http://localhost:8080/ws";
+const Home = () => {
+  const [departureData, setDepartureDataList] = useState([]);
+  const [filteredToday, setFilteredToday] = useState([]);
+  const [filteredNext, setFilteredNext] = useState([]);
+  const [planeList, setPlaneList] = useState([]);
+  const [selectedLines, setSelectedLines] = useState([]);
 
-function Home() {
-  const { roomId } = useParams();
-  const { userInfo } = useContext(LoginContext);
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [accessToken, setAccessToken] = useState("");
-  const stompClientRef = useRef(null);
-  const inputRef = useRef(null);
-  const chatContainerRef = useRef(null);
-  const [userCount, setUserCount] = useState(0);
-  const [allUserCount, setAllUserCount] = useState(0);
+  const getFormattedDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}${month}${day}`;
+  };
 
-  const getChatList = async () => {
+  const getTomorrowDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const year = tomorrow.getFullYear();
+    const month = String(tomorrow.getMonth() + 1).padStart(2, "0");
+    const day = String(tomorrow.getDate()).padStart(2, "0");
+    return `${year}${month}${day}`;
+  };
+
+  const get2LaterDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 2);
+    const year = tomorrow.getFullYear();
+    const month = String(tomorrow.getMonth() + 1).padStart(2, "0");
+    const day = String(tomorrow.getDate()).padStart(2, "0");
+    return `${year}${month}${day}`;
+  };
+
+  const getDepartureData = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/chat/room/${roomId}/messages`
+      const response = await axios.get("http://localhost:8080/get/departures");
+      setDepartureDataList(response.data);
+
+      const filteredToday = response.data.filter(
+        (list) => list.date == getFormattedDate()
       );
-      setMessages(response.data); // 기존 채팅 내역을 반영
-      console.log(response.data);
-    } catch (error) {
-      console.error("채팅 내역을 불러오는 중 오류 발생:", error);
+      setFilteredToday(filteredToday);
+      console.log(filteredToday);
+
+      const filteredNext = response.data.filter(
+        (list) => list.date == getTomorrowDate()
+      );
+      setFilteredNext(filteredNext);
+      console.log(filteredNext);
+    } catch (errer) {
+      console.error("출국장 데이터 불러오는 중 오류 발생", errer);
     }
   };
 
-  useEffect(() => {
-    getChatList();
+  const getPlaneList = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/get/planes");
 
-    const socket = new SockJS(SOCKET_URL);
-
-    const token = Cookies.get("authorization");
-    setAccessToken(token);
-    console.log(token);
-
-    const stompClient = new Client({
-      webSocketFactory: () => socket,
-      debug: (msg) => console.log("[STOMP]:", msg),
-
-      onConnect: () => {
-        console.log("[STOMP] 연결 성공: ", stompClient);
-
-        // 특정 채팅방 [구독]
-        stompClient.subscribe(`/topic/chat/${roomId}`, (message) => {
-          if (message.body) {
-            console.log("[STOMP] 메시지 수신: ", message.body);
-            const receivedMessage = JSON.parse(message.body);
-            setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-          }
-        });
-
-        // 특정 채팅방 접속 인원 수 [구독]
-        stompClient.subscribe(
-          `/topic/chatroom/userCnt/${roomId}`,
-          (message) => {
-            console.log("[STOMP] 현재 인원 수: ", message.body);
-            setUserCount(parseInt(message.body, 10));
-          }
-        );
-
-        // 특정 채팅방 접속 인원 수 [응답]
-        stompClient.publish({
-          destination: `/app/chatroom/userCnt`,
-        });
-
-        // 채팅방에 접속한 모든 인원 수 [구독]
-        stompClient.subscribe(`/topic/all/userCnt`, (message) => {
-          console.log("[STOMP] 전체 인원 수: ", message.body);
-          setAllUserCount(parseInt(message.body, 10));
-        });
-
-        // 채팅방에 접속한 모든 인원 수 [응답]
-        stompClient.publish({
-          destination: "/app/chat/userCnt",
-        });
-
-        if (!sessionStorage.getItem(`entered-${roomId}`)) {
-          console.log("[STOMP] 입장 메시지 전송");
-
-          // 입장 메세지 정보
-          const enterMessage = {
-            chatType: "ENTER",
-            accessToken: `Bearer ${token}`,
-            roomId: roomId,
-          };
-
-          // 서버로 입장 메세지 전달, 특정 채팅방 [구독]에 대한 [응답]
-          stompClient.publish({
-            destination: "/app/chat/message",
-            body: JSON.stringify(enterMessage),
-          });
-
-          sessionStorage.setItem(`entered-${roomId}`, "true");
-        }
-      },
-
-      onStompError: (e) => {
-        console.error("[STOMP] 연결 실패: ", e);
-        stompClient.deactivate();
-      },
-
-      // websocket 연결이 해제될 때 자동 실행
-      // 즉, stompClient.deactivate()이 실행 될 때 작동
-      onDisconnect: () => {
-        console.log("[STOMP] 연결 해제");
-      },
-
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-    });
-
-    stompClient.activate();
-    stompClientRef.current = stompClient;
-
-    return () => {
-      console.log("[STOMP] 채팅방 나감, 퇴장 메시지 전송 후 연결 해제");
-
-      if (stompClientRef.current && stompClientRef.current.connected) {
-        const exitMessage = {
-          chatType: "EXIT",
-          accessToken: `Bearer ${token}`,
-          roomId: roomId,
-        };
-
-        // 서버로 퇴장 메시지 전달, 특정 채팅방 [구독]에 대한 [응답]
-        stompClientRef.current.publish({
-          destination: "/app/chat/message",
-          body: JSON.stringify(exitMessage),
-        });
-
-        console.log("[STOMP] 퇴장 메시지 전송 완료");
-      }
-
-      // WebSocket 연결 해제
-      stompClient.deactivate();
-      sessionStorage.removeItem(`entered-${roomId}`);
-    };
-  }, [roomId]);
-
-  const sendMessage = () => {
-    if (
-      !message.trim() ||
-      !stompClientRef.current ||
-      !stompClientRef.current.connected
-    )
-      return;
-
-    const now = new Date();
-    const koreaTime = new Date(
-      now.getTime() + 9 * 60 * 60 * 1000
-    ).toISOString(); // KST 변환
-
-    const newMessage = {
-      chatType: "TALK",
-      content: message,
-      accessToken: `Bearer ${accessToken}`,
-      createdAt: koreaTime,
-      roomId: roomId,
-    };
-
-    stompClientRef.current.publish({
-      destination: "/app/chat/message",
-      body: JSON.stringify(newMessage),
-    });
-
-    setMessage("");
-    inputRef.current?.focus();
-  };
-
-  const formatTime = (timestamp) => {
-    if (!timestamp) return "";
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString("ko-KR", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  // 새로운 메시지가 추가될 때 자동으로 스크롤을 최신 메시지로 이동
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      setPlaneList(response.data);
+      console.log(planeList);
+    } catch (errer) {
+      console.error("출국장 데이터 불러오는 중 오류 발생", errer);
     }
-  }, [messages]);
+  };
+
+  const toggleSelection = (key) => {
+    setSelectedLines(
+      (prev) => (prev.includes(key) ? [] : [key]) // 배열에 하나만 들어가게끔 설정
+    );
+  };
+
+  const getCongestionLevel = (value, data, index) => {
+    // 2시간 지속 체크
+    const prev1 = index > 0 ? data[index - 1].totalDepartures : 0;
+    const prev2 = index > 1 ? data[index - 2].totalDepartures : 0;
+    const is2HoursAbove7600 = prev1 > 7600 && prev2 > 7600;
+    const is2HoursAbove8200 = prev1 > 8200 && prev2 > 8200;
+
+    if (value < 7000) return "원활";
+    if (value <= 7600) return "보통";
+    if (value <= 8200) return "약간 혼잡";
+    if (value <= 8600 || is2HoursAbove7600) return "혼잡";
+    if (value > 8600 || is2HoursAbove8200) return "매우 혼잡";
+    return "";
+  };
+
+  const lineOptions = [
+    { key: "t1Depart12", label: "T1 출발 (1, 2번 게이트)" },
+    { key: "t1Depart3", label: "T1 출발 (3번 게이트)" },
+    { key: "t1Depart4", label: "T1 출발 (4번 게이트)" },
+    { key: "t1Depart56", label: "T1 출발 (5, 6번 게이트)" },
+    { key: "t2Depart1", label: "T2 출발 (1번 게이트)" },
+    { key: "t2Depart2", label: "T2 출발 (2번 게이트)" },
+  ];
+
+  const colors = [
+    "#8884d8",
+    "#82ca9d",
+    "#ff7300",
+    "#00c49f",
+    "#ffbb28",
+    "#ff4444",
+  ];
 
   useEffect(() => {
-    console.log("현재 채팅방 ID:", roomId);
+    getDepartureData();
+    getPlaneList();
   }, []);
 
   return (
     <>
       <Header />
-      <div className="chat-container">
-        <div className="chat-box">
-          <div className="chat-header">
-            채팅방 (현재 접속자: {userCount}명, {allUserCount}명)
+      <div className="container">
+        <h2>출국장 혼잡도</h2>
+        <div className="chart-section">
+          <div className="chart-filters">
+            <div className="date-buttons">
+              <button>{getFormattedDate().substring(4)}</button>
+              <button>{getTomorrowDate().substring(4)}</button>
+            </div>
+            <div className="place-buttons">
+              {lineOptions.map((option) => (
+                <div key={option.key}>
+                  <button
+                    type="button"
+                    onClick={() => toggleSelection(option.key)}
+                  >
+                    {option.label}
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-
-          <div ref={chatContainerRef} className="chat-messages">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`chat-message ${
-                  msg.chatType === "ENTER" || msg.chatType === "EXIT"
-                    ? "enter-message"
-                    : msg.username === userInfo?.username
-                    ? "mine"
-                    : "other"
-                }`}
-              >
-                {msg.chatType === "ENTER" || msg.chatType === "EXIT" ? (
-                  <div className="enter-message-content">{msg.content}</div>
-                ) : msg.username === userInfo?.username ? ( // 내꺼
-                  <div className="message-wrapper">
-                    <div className="message-content">{msg.content}</div>
-                    <div className="message-timestamp mine-timestamp">
-                      {formatTime(msg.createdAt)}
-                    </div>
-                  </div>
-                ) : (
-                  // 상대꺼
-                  <div className="message-wrapper">
-                    <div className="message-username">{msg.name}</div>
-                    <div className="message-content">{msg.content}</div>
-                    <div className="message-timestamp other-timestamp">
-                      {formatTime(msg.createdAt)}
-                    </div>
-                  </div>
-                )}
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart
+              data={filteredToday}
+              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="timeZone"
+                tickFormatter={(tick) => tick.split("_")[0]}
+              />
+              <YAxis />
+              <Tooltip
+                formatter={(value, name, props) => {
+                  const congestion = getCongestionLevel(
+                    value,
+                    filteredToday,
+                    props.payload.index
+                  );
+                  return [`${value}명 (${congestion})`, name];
+                }}
+              />
+              <Legend />
+              {selectedLines.map((key, index) => (
+                <Line
+                  key={key}
+                  type="monotone"
+                  dataKey={key}
+                  stroke={colors[index % colors.length]}
+                  name={lineOptions.find((o) => o.key === key)?.label}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      <div className="container">
+        <h2>
+          {getFormattedDate().substring(4)} ~ {get2LaterDate().substring(4)}{" "}
+          항공기 목록{" "}
+        </h2>
+        <div className="table-container">
+          <div className="data-row header">
+            <div>항공편</div>
+            <div>항공사</div>
+            <div>일정 출발 시간</div>
+            <div>변경 시간</div>
+            <div>탑승구</div>
+            <div>터미널</div>
+            <div>상태</div>
+            <div>항공기 번호</div>
+          </div>
+          <div className="data-body">
+            {planeList.map((plane, index) => (
+              <div className="data-row" key={index}>
+                <div>{plane.flightId}</div>
+                <div>{plane.airLine}</div>
+                <div>{plane.scheduleDatetime}</div>
+                <div>{plane.estimatedDatetime}</div>
+                <div>{plane.gateNumber}</div>
+                <div>{plane.terminalId}</div>
+                <div>{plane.remark}</div>
+                <div>{plane.aircraftRegNo}</div>
               </div>
             ))}
           </div>
-
-          <div className="chat-input-container">
-            <input
-              ref={inputRef}
-              type="text"
-              className="chat-input"
-              placeholder="메시지를 입력하세요..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            />
-            <button className="chat-send-button" onClick={sendMessage}>
-              전송
-            </button>
-          </div>
         </div>
       </div>
+      <Footer />
     </>
   );
-}
+};
 
 export default Home;
