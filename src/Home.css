@@ -7,7 +7,6 @@
 }
 
 .container {
-  width: 90%;
   margin: 20px auto;
   font-family: Arial, sans-serif;
   background-color: white;
@@ -30,7 +29,7 @@
 
 .date-buttons button {
   background-color: rgb(21, 205, 222);
-  color: black;
+  color: white;
   border: none;
   border-radius: 10px;
   width: 100%;
@@ -46,7 +45,7 @@
   height: 38px;
   margin: 3px;
   background-color: rgb(21, 205, 222);
-  color: black;
+  color: white;
   font-family: "Ownglyph_ParkDaHyun";
   font-size: 20px;
   border: none;
@@ -62,10 +61,43 @@
   width: 30%;
 }
 
+.map {
+  width: 900px;
+  height: 500px;
+}
+
+.mapImg {
+  border: 1px ;
+  margin-right: 20px;
+  padding: 20px;
+}
+
+.mapInfo {
+  font-family: "Ownglyph_ParkDaHyun";
+  font-size: 15px;
+  margin-left: 20px;
+  padding: 20px;
+}
+
+.goChat {
+  font-family: "Ownglyph_ParkDaHyun";
+  font-size: 20px;
+}
+
 h2 {
   text-align: center;
   margin-bottom: 15px;
   color: #333;
+}
+
+.chatBtn {
+  width: 90px;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  margin-left: 20px;
+  background-color: rgb(21, 205, 222);
+  color: white;
 }
 
 .table-container {

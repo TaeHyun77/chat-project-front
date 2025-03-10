@@ -40,7 +40,7 @@ const Header = () => {
           alert("로그아웃 성공!");
           setIsLogin(false);
           setUserInfo(null);
-          navigate("/home");
+          navigate("/");
         } else {
           console.error("로그아웃 실패");
         }
@@ -49,6 +49,10 @@ const Header = () => {
       }
     }
   };
+
+  const handleHome = () => {
+    navigate("/");
+  }
 
   useEffect(() => {
     logincheck();
@@ -60,9 +64,9 @@ const Header = () => {
 
   return (
     <header className="headerContainer">
-      <div className="logoContainer">
+      <div className="logoContainer" onClick={handleHome}>
         <img src={inLogo} className="logo" />
-        <p>Travel via Incheon !</p>
+        <p>Travel via Incheon Airport !</p>
       </div>
       {!isLogin ? (
         <div className="logContainer">
@@ -72,7 +76,7 @@ const Header = () => {
         </div>
       ) : (
         <div className="logContainer">
-          <p className="loginName">{userInfo?.name} 님</p>
+          <p className="loginName">환영해요 {userInfo?.name} 님 !</p>
           <button onClick={googleLogout} className="logoutButton">
             로그아웃
           </button>

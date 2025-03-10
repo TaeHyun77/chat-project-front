@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState, useContext } from "react";
+import axios from "axios";
 import { LoginContext } from "./LoginState";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import Cookies from "js-cookie";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./ChatRoomInfo.css";
 import Header from "./Header";
-import axios from "axios";
+import Footer from "./Footer";
+import { GoSignIn } from "react-icons/go";
 
 const SOCKET_URL = "http://localhost:8080/ws";
 
 function Home() {
+  const navigate = useNavigate();
   const { roomId } = useParams();
-  const { userInfo} = useContext(LoginContext);
+  const { userInfo } = useContext(LoginContext);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [accessToken, setAccessToken] = useState("");
@@ -33,7 +36,7 @@ function Home() {
       );
 
       // 기존 채팅 내역을 반영, 이전의 ENTER, EXIT 메세지는 filter
-      setMessages(filteredMessages); 
+      setMessages(filteredMessages);
       console.log(filteredMessages);
     } catch (error) {
       console.error("채팅 내역을 불러오는 중 오류 발생:", error);
@@ -193,6 +196,12 @@ function Home() {
     });
   };
 
+  const handleExit = () => {
+    if (!window.confirm("채팅방을 나가시겠습니까 ?")) return;
+
+    navigate("/chatrooms")
+  }
+
   // 새로운 메시지가 추가될 때 자동으로 스크롤을 최신 메시지로 이동
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -211,7 +220,12 @@ function Home() {
       <div className="chat-container">
         <div className="chat-box">
           <div className="chat-header">
-            채팅방 (현재 접속자: {userCount}명, {allUserCount}명)
+            <div className="icon" onClick={handleExit}>
+              <GoSignIn /> 
+            </div>
+            <span>
+              [ 현재 접속자: {userCount}명 ]
+            </span>
           </div>
 
           <div ref={chatContainerRef} className="chat-messages">
@@ -265,6 +279,7 @@ function Home() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

@@ -12,8 +12,8 @@ function App() {
         <FuncList>
           <Routes>
             <Route path="/:roomId" element={<ChatRoomInfo />} />
-            <Route path="/" element={<ChatRooms />} />
-            <Route path="/home" element={<Home />} />
+            <Route path="/chatrooms" element={<ChatRooms />} />
+            <Route path="/" element={<Home />} />
           </Routes>
         </FuncList>
       </LoginState>
