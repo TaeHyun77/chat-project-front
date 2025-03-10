@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { FuncModule } from "./FuncList";
+import Map from "./map.png";
 
 import {
   LineChart,
@@ -26,6 +28,7 @@ const Home = () => {
     calculateDelay,
     getCongestionLevel,
   } = useContext(FuncModule);
+  const navigate = useNavigate();
 
   const [departureData, setDepartureDataList] = useState([]);
   const [filteredToday, setFilteredToday] = useState([]);
@@ -88,6 +91,10 @@ const Home = () => {
     plane.flightId.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleChatPage = () => {
+    navigate("/chatrooms");
+  };
+
   useEffect(() => {
     getDepartureData();
     getPlaneList();
@@ -96,6 +103,15 @@ const Home = () => {
   return (
     <>
       <Header />
+      <div
+        className="container"
+        style={{ display: "flex", alignItems: "center" }}
+      >
+        <p className="goChat">여러 사용자들과 소통해보세요 !</p>
+        <button className="chatBtn" onClick={handleChatPage}>
+          채팅방 이동
+        </button>
+      </div>
       <div className="container">
         <h2>
           출국장 예상 혼잡도 <span>( {formatDateTime2(selectedDate)} )</span>
@@ -192,6 +208,10 @@ const Home = () => {
             오늘로부터 3일 간의 데이터를 제공합니다.{" "}
           </p>
           <p style={{ color: "blue" }}>항공기 상태 값이 업데이트 됩니다.</p>
+          <p style={{ color: "red" }}>
+            {" "}
+            P01 : T1 터미널 , P02 : 탑승동 , P03 : T2 터미널
+          </p>
         </div>
 
         <div className="searchContainer">
@@ -249,6 +269,44 @@ const Home = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="container" style={{ display: "flex" }}>
+        <div className="mapImg">
+          <img src={Map} className="map" />
+        </div>
+        <div className="mapInfo">
+          <p style={{ fontSize: "25px", color:"red" }}>
+            B1 공항철도 입구부터 F3 체크인 카운터까지 소요시간{" "}
+          </p>
+          <div style={{display:"flex"}}>
+            <div style={{marginRight:"50px"}}>
+              <p>( T1 ) ~ A 체크인 카운터 : 약 16분</p>
+              <p>( T1 ) ~ B 체크인 카운터 : 약 15분</p>
+              <p>( T1 ) ~ C 체크인 카운터 : 약 14분</p>
+              <p>( T1 ) ~ D 체크인 카운터 : 약 13분</p>
+              <p>( T1 ) ~ E 체크인 카운터 : 약 12분</p>
+              <p>( T1 ) ~ F 체크인 카운터 : 약 11분</p>
+              <p>( T1 ) ~ G 체크인 카운터 : 약 10분</p>
+              <p>( T1 ) ~ H 체크인 카운터 : 약 11분</p>
+              <p>( T1 ) ~ J 체크인 카운터 : 약 12분</p>
+              <p>( T1 ) ~ K 체크인 카운터 : 약 13분</p>
+              <p>( T1 ) ~ L 체크인 카운터 : 약 14분</p>
+              <p>( T1 ) ~ M 체크인 카운터 : 약 15분</p>
+              <p>( T1 ) ~ N 체크인 카운터 : 약 16분</p>
+            </div>
+            <div>
+              <p>( T2 ) ~ A 체크인 카운터 : 약 9분</p>
+              <p>( T2 ) ~ B 체크인 카운터 : 약 8분</p>
+              <p>( T2 ) ~ C 체크인 카운터 : 약 7분</p>
+              <p>( T2 ) ~ D 체크인 카운터 : 약 6분</p>
+              <p>( T2 ) ~ E 체크인 카운터 : 약 6분</p>
+              <p>( T2 ) ~ F 체크인 카운터 : 약 7분</p>
+              <p>( T2 )  ~ G 체크인 카운터 : 약 8분</p>
+              <p>( T2 ) ~ H 체크인 카운터 : 약 9분</p>
+            </div>
           </div>
         </div>
       </div>

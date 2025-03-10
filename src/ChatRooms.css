@@ -1,70 +1,78 @@
 /* 전체 레이아웃 */
 .chatrooms-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 1000px;
-    background-color: #f8f9fa;
-  }
-  
-  /* 제목 */
-  .chatrooms-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  /* 입력창 컨테이너 */
-  .chatrooms-input-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .chatrooms-input {
-    padding: 10px;
-    width: 250px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-  }
-  
-  .chatrooms-button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .chatrooms-button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* 채팅방 목록 */
-  .chatrooms-list {
-    list-style: none;
-    padding: 0;
-    width: 300px;
-  }
-  
-  .chatroom-item {
-    padding: 12px;
-    width: 300px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    text-align: center;
-  }
-  
-  .chatroom-item:hover {
-    background-color: #e9ecef;
-    transform: scale(1.03);
-  }
-  
+  width: 90%;
+  height: 900px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  background-color: white;
+  border-radius: 20px;
+  width: 80%;
+  padding: 20px;
+}
+/* 제목 */
+.chatrooms-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.chatrooms-input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.room-list {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.chatrooms-input {
+  padding: 10px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.chatrooms-button {
+  padding: 10px 15px;
+  background-color: rgb(21, 205, 222);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.chatrooms-button:hover {
+  background-color: #0056b3;
+}
+
+/* 채팅방 목록 */
+.chatrooms-list {
+  list-style: none;
+  padding: 0;
+}
+
+.chatroom-item {
+  display: flex;
+  padding: 12px;
+  width: 380px;
+  background: white;
+  border: 1px solid rgb(228, 219, 219);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+}
+
+.chatroom-item:hover {
+  transform: scale(1.03);
+}

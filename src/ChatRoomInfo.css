@@ -1,31 +1,50 @@
 .chat-container {
   display: flex;
+  width: 80%;
+  height: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 20px;
   justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 1000px;
-  background-color: #f4f4f4;
+  background-color: white;
 }
 
 .chat-box {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 600px;
-  height: 80%;
+  width:45%;
+  height: 93%;
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  margin-top: 50px;
 }
 
 .chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 좌우 정렬 */
+  align-items: center;
   padding: 15px;
   font-size: 18px;
   font-weight: bold;
   text-align: center;
-  background: #007bff;
+  background: rgb(21, 205, 222);
   color: white;
+  font-size: 15px;
+
+}
+
+.icon {
+  font-size: 20px;
+}
+
+.icon:hover {
+  transform: scale(1.03);
+  color: red;
 }
 
 /* 메시지 목록 */
@@ -59,7 +78,7 @@
   padding: 10px 15px;
   font-size: 14px;
   word-wrap: break-word;
-  background: #007bff;
+  background: rgb(21, 205, 222);
   color: white;
   max-width: fit-content;
   word-break: break-word;
@@ -142,7 +161,7 @@
 .chat-send-button {
   margin-left: 10px;
   padding: 10px 15px;
-  background: #007bff;
+  background: rgb(21, 205, 222);
   color: white;
   border: none;
   border-radius: 5px;
