@@ -11,10 +11,13 @@
   margin: 20px auto;
   font-family: Arial, sans-serif;
   background-color: white;
-
   border-radius: 20px;
   width: 80%;
   padding: 20px;
+}
+
+.container span {
+  font-size: 18px;
 }
 
 .chart-section {
@@ -43,9 +46,9 @@
   height: 38px;
   margin: 3px;
   background-color: rgb(21, 205, 222);
-  color: white;
+  color: black;
   font-family: "Ownglyph_ParkDaHyun";
-  font-size: 17px;
+  font-size: 20px;
   border: none;
   border-radius: 10px;
 }
@@ -66,22 +69,51 @@ h2 {
 }
 
 .table-container {
-  max-height: 500px;
+  max-height: 600px;
   overflow-y: auto;
   border: 1px solid #ddd;
   border-radius: 10px;
   padding: 10px;
 }
+
 .data-row {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   padding: 15px;
   border-bottom: 1px solid #ddd;
   text-align: center;
+  align-items: center;
 }
+
 .data-row.header {
   background-color: #acb9c888;
   color: black;
+  border-radius: 10px;
+}
+
+.searchContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.departure-info {
+  border-left: 3px solid red;
+  padding-left: 10px;
+  font-size: 17px;
+}
+
+.searchContainer input {
+  width: 150px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid gray;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.plane-time p {
+  display: flex;
+  margin: 0;
 }
 
 /* 스크롤바 전체 영역 */
