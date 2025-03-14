@@ -91,6 +91,17 @@ const Home = () => {
     plane.flightId.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const sortedFlights = [...filteredFlights].sort((a, b) => {
+    const dateA = new Date(
+      `${a.scheduleDatetime.substring(0, 4)}-${a.scheduleDatetime.substring(4, 6)}-${a.scheduleDatetime.substring(6, 8)}T${a.scheduleDatetime.substring(8, 10)}:${a.scheduleDatetime.substring(10, 12)}`
+    );
+    const dateB = new Date(
+      `${b.scheduleDatetime.substring(0, 4)}-${b.scheduleDatetime.substring(4, 6)}-${b.scheduleDatetime.substring(6, 8)}T${b.scheduleDatetime.substring(8, 10)}:${b.scheduleDatetime.substring(10, 12)}`
+    );
+  
+    return dateA - dateB; // 오름차순 정렬
+  });
+
   const handleChatPage = () => {
     navigate("/chatrooms");
   };
@@ -107,7 +118,7 @@ const Home = () => {
         className="container"
         style={{ display: "flex", alignItems: "center" }}
       >
-        <p className="goChat">여러 사용자들과 소통해보세요 !</p>
+        <p className="goChat">로그인 하여 여러 사용자들과 소통해보세요 !</p>
         <button className="chatBtn" onClick={handleChatPage}>
           채팅방 이동
         </button>
@@ -207,11 +218,12 @@ const Home = () => {
           <p style={{ color: "blue" }}>
             오늘로부터 3일 간의 데이터를 제공합니다.{" "}
           </p>
-          <p style={{ color: "blue" }}>항공기 상태 값이 업데이트 됩니다.</p>
+          <p style={{ color: "blue" }}>항공기 상태 값이 실시간 업데이트 됩니다.</p>
+          <p style={{ color: "blue" }}> 오늘 날짜의 조회되지 않는 항공편은 이미 출발한 항공편입니다. </p>
           <p style={{ color: "red" }}>
             {" "}
             P01 : T1 터미널 , P02 : 탑승동 , P03 : T2 터미널
-          </p>
+          </p> 
         </div>
 
         <div className="searchContainer">
@@ -230,18 +242,16 @@ const Home = () => {
             <div>탑승구</div>
             <div>터미널</div>
             <div>상태</div>
-            <div>항공기 번호</div>
             <div>시간</div>
           </div>
           <div className="data-body">
-            {filteredFlights.map((plane, index) => (
+            {sortedFlights.map((plane, index) => (
               <div className="data-row" key={index}>
                 <div>{plane.flightId}</div>
                 <div>{plane.airLine}</div>
-                <div>{plane.gateNumber}</div>
+                <div>{plane.gateNumber == "" ? "미정" : plane.gateNumber + "번"}</div>
                 <div>{plane.terminalId}</div>
-                <div>{plane.remark == "null" ? "대기중" : plane.remark}</div>
-                <div>{plane.aircraftRegNo}</div>
+                <div>{plane.remark == "null" ? "예정" : plane.remark}</div>
                 <div className="plane-time">
                   {plane.scheduleDatetime === plane.estimatedDatetime ? (
                     <>

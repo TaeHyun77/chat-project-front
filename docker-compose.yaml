@@ -1,0 +1,10 @@
+version: "3"
+services:
+  frontend: # 해당 이름으로 컨테이너 이름이 자동 생성됨
+    command: ["npm", "start"]  # docker-compose up 할 때 npm start로 실행
+    build:
+      context: .  # 현재 디렉토리에서 Dockerfile 사용
+      dockerfile: dockerfile
+    image: ayeah77/front01
+    ports:
+      - "3000:3000"  # 호스트 3000 → 컨테이너 3000
