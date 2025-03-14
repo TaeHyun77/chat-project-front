@@ -5,6 +5,7 @@ import api from "./api/api";
 import Header from "./Header";
 import Footer from "./Footer";
 import "./ChatRooms.css";
+import { PiChatCenteredDotsThin } from "react-icons/pi";
 
 const ChatRooms = () => {
   const { userInfo, isLogin } = useContext(LoginContext);
@@ -77,18 +78,19 @@ const ChatRooms = () => {
           </button>
         </div>
         <div className="room-list">
-        <ul className="chatrooms-list">
-          {rooms.map((room, index) => (
-            <li
-              key={room.id || room.chatRoomId || `room-${index}`}
-              className="chatroom-item"
-              onClick={() => enterRoom(room.chatRoomId)}
-            >
-              {room.chatRoomName}
-            </li>
-          ))}
-        </ul>
-      </div>
+          <ul className="chatrooms-list">
+            {rooms.map((room, index) => (
+              <li
+                key={room.id || room.chatRoomId || `room-${index}`}
+                className="chatroom-item"
+                onClick={() => enterRoom(room.chatRoomId)}
+              >
+                {room.chatRoomName}
+                <span className="chatIcon"><PiChatCenteredDotsThin /></span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
       <Footer />
     </>
