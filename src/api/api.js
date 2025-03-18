@@ -33,7 +33,7 @@ api.interceptors.response.use(
         const refreshAuthorization = Cookies.get("refresh_authorization");
 
         const response = await axios.post(
-          "http://localhost:8080/reToken",
+          "http://3.39.130.212:8080/reToken",
           {},
           {
             // 헤더에 담아서 보냄
