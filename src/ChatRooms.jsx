@@ -16,7 +16,7 @@ const ChatRooms = () => {
 
   const selectRooms = async () => {
     try {
-      const response = await api.get("http://localhost:8080/chat/rooms");
+      const response = await api.get("http://3.39.130.212:8080/chat/rooms");
       setRooms(response.data);
       console.log(response.data);
     } catch (error) {
@@ -32,7 +32,7 @@ const ChatRooms = () => {
     if (!trimmedName) return;
 
     try {
-      const response = await api.post("http://localhost:8080/chat/room", {
+      const response = await api.post("http://3.39.130.212:8080/chat/room", {
         chatRoomName: trimmedName,
         creator: userInfo?.username,
       });

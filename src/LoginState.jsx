@@ -26,7 +26,7 @@ const LoginState = ({ children }) => {
     let data;
 
     try {
-      response = await api.get("http://localhost:8080/info");
+      response = await api.get("http://3.39.130.212:8080/info");
       data = response.data;
 
       if (data === "UNAUTHORIZED" || response.status === 401) {

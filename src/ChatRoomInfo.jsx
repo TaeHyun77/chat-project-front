@@ -10,7 +10,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { GoSignIn } from "react-icons/go";
 
-const SOCKET_URL = "http://localhost:8080/ws";
+const SOCKET_URL = "http://3.39.130.212:8080/ws";
 
 function Home() {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ function Home() {
   const getChatList = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/chat/room/${roomId}/messages`
+        `http://3.39.130.212:8080/chat/room/${roomId}/messages`
       );
 
       const filteredMessages = response.data.filter(

@@ -42,7 +42,7 @@ const Home = () => {
 
   const getDepartureData = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/get/departures");
+      const response = await axios.get("http://3.39.130.212:8080/get/departures");
       setDepartureDataList(response.data);
 
       const filteredToday = response.data.filter(
@@ -63,7 +63,7 @@ const Home = () => {
 
   const getPlaneList = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/get/planes");
+      const response = await axios.get("http://3.39.130.212:8080/get/planes");
 
       setPlaneList(response.data);
       console.log(planeList);

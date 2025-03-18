@@ -1,15 +1,26 @@
-FROM node:18
+FROM node:18 AS builder
 
-WORKDIR /app
+WORKDIR /app 
 
-COPY package.json package-lock.json ./
+COPY ./package* /app/  
 
 RUN npm install
 
-COPY . .
+COPY . /app
 
-# 3000번 포트 노출
-EXPOSE 3000
+RUN npm run build
 
-# npm start 스크립트 실행
-CMD ["npm", "start"]
+FROM nginx:stable-alpine
+
+# Nginx 기본 설정 삭제 및 새로운 설정 복사
+RUN rm -rf /etc/nginx/conf.d
+
+COPY conf /etc/nginx
+
+# 빌드된 파일을 Nginx의 루트 폴더로 이동
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# 80포트 오픈하고 nginx 실행
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
