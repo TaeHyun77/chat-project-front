@@ -20,7 +20,5 @@ COPY conf /etc/nginx
 # 빌드된 파일을 Nginx의 루트 폴더로 이동
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# 80포트 오픈하고 nginx 실행
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# 3000포트 오픈하고 nginx 실행
+EXPOSE 3000

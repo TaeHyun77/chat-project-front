@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useContext } from "react";
-import axios from "axios";
+import * as req from './api/req';
 import { LoginContext } from "./LoginState";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
@@ -10,7 +10,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { GoSignIn } from "react-icons/go";
 
-const SOCKET_URL = "http://3.39.130.212:8080/ws";
+const SOCKET_URL = "http://localhost:8080/ws";
 
 function Home() {
   const navigate = useNavigate();
@@ -27,9 +27,7 @@ function Home() {
 
   const getChatList = async () => {
     try {
-      const response = await axios.get(
-        `http://3.39.130.212:8080/chat/room/${roomId}/messages`
-      );
+      const response = await req.enterChatRoom(roomId);
 
       const filteredMessages = response.data.filter(
         (message) => message.chatType !== "ENTER" && message.chatType !== "EXIT"

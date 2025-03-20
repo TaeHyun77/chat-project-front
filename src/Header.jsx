@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from "react";
+import * as req from './api/req';
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import { LoginContext } from "./LoginState";
@@ -16,7 +17,7 @@ const Header = () => {
   // Google 로그인
   const onGoogleLogin = async () => {
     try {
-      const response = await axios.get("http://3.39.130.212:8080/googleLogin");
+      const response = await req.googleLogin();
       const data = response.data;
 
       if (response.status === 200) {
