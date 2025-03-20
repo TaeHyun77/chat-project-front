@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import * as req from './api/req';
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "./LoginState";
 import api from "./api/api";
@@ -16,7 +17,7 @@ const ChatRooms = () => {
 
   const selectRooms = async () => {
     try {
-      const response = await api.get("http://3.39.130.212:8080/chat/rooms");
+      const response = await req.chatRooms();
       setRooms(response.data);
       console.log(response.data);
     } catch (error) {
@@ -31,11 +32,13 @@ const ChatRooms = () => {
     const trimmedName = newRoomName.trim();
     if (!trimmedName) return;
 
+    const chatRoomInfo = {
+      chatRoomName : trimmedName,
+      creator : userInfo?.username
+    }
+
     try {
-      const response = await api.post("http://3.39.130.212:8080/chat/room", {
-        chatRoomName: trimmedName,
-        creator: userInfo?.username,
-      });
+      const response = await req.createChatRoom(chatRoomInfo);
 
       console.log("새로운 채팅방:", response.data);
 

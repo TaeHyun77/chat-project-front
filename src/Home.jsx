@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import * as req from './api/req';
 import { useNavigate } from "react-router-dom";
 import { FuncModule } from "./FuncList";
 import Map from "./map.png";
@@ -42,12 +43,15 @@ const Home = () => {
 
   const getDepartureData = async () => {
     try {
-      const response = await axios.get("http://3.39.130.212:8080/get/departures");
+      const response = await req.departures();
+
+      console.log("res " + response.data)
       setDepartureDataList(response.data);
 
       const filteredToday = response.data.filter(
         (list) => list.date == getFormattedDate()
       );
+
       setFilteredToday(filteredToday);
       console.log(filteredToday);
 
@@ -63,14 +67,28 @@ const Home = () => {
 
   const getPlaneList = async () => {
     try {
-      const response = await axios.get("http://3.39.130.212:8080/get/planes");
+      const response = await req.planes();
 
-      setPlaneList(response.data);
-      console.log(planeList);
-    } catch (errer) {
-      console.error("출국장 데이터 불러오는 중 오류 발생", errer);
+      const now = new Date(); // 현재 시간
+  
+      const filteredPlanes = response.data.filter((plane) => {
+
+        // 문자열(202503200005)을 날짜 객체로 변환
+        const flightDate = new Date(
+          `${plane.scheduleDatetime.substring(0, 4)}-${plane.scheduleDatetime.substring(4, 6)}-${plane.scheduleDatetime.substring(6, 8)}T${plane.scheduleDatetime.substring(8, 10)}:${plane.scheduleDatetime.substring(10, 12)}`
+        );
+  
+        // 현재 시간보다 이전인지 확인 & remark 값이 "출발"인지 확인
+        return !(flightDate < now && plane.remark === "출발");
+      });
+  
+      setPlaneList(filteredPlanes);
+      console.log(filteredPlanes);
+    } catch (error) {
+      console.error("항공편 데이터 불러오는 중 오류 발생", error);
     }
   };
+  
 
   const lineOptions = [
     { key: "t1Depart12", label: "T1 출발 (1, 2번 게이트)" },

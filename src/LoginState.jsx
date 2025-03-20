@@ -1,6 +1,7 @@
 import React, { useEffect, useState, createContext } from "react";
 import api from "./api/api";
 import Cookies from "js-cookie";
+import * as req from './api/req';
 
 export const LoginContext = createContext();
 
@@ -26,7 +27,7 @@ const LoginState = ({ children }) => {
     let data;
 
     try {
-      response = await api.get("http://3.39.130.212:8080/info");
+      response = await req.info();
       data = response.data;
 
       if (data === "UNAUTHORIZED" || response.status === 401) {
