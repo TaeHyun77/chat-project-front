@@ -2,11 +2,10 @@ import React, { useEffect, useState, useContext } from "react";
 import * as req from './api/req';
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "./LoginState";
-import api from "./api/api";
 import Header from "./Header";
 import Footer from "./Footer";
 import "./ChatRooms.css";
-import { PiChatCenteredDotsThin } from "react-icons/pi";
+import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 
 const ChatRooms = () => {
   const { userInfo, isLogin } = useContext(LoginContext);
@@ -66,7 +65,7 @@ const ChatRooms = () => {
     <>
       <Header />
       <div className="chatrooms-container">
-        <h2 className="chatrooms-title">채팅방</h2>
+        <h2 className="chatrooms-title">실시간 오픈 채팅방</h2>
         <div className="chatrooms-input-container">
           <input
             type="text"
@@ -77,7 +76,7 @@ const ChatRooms = () => {
             placeholder="채팅방 이름 입력"
           />
           <button className="chatrooms-button" onClick={createRoom}>
-            방 만들기
+            채팅방 생성
           </button>
         </div>
         <div className="room-list">
@@ -89,7 +88,7 @@ const ChatRooms = () => {
                 onClick={() => enterRoom(room.chatRoomId)}
               >
                 {room.chatRoomName}
-                <span className="chatIcon"><PiChatCenteredDotsThin /></span>
+                <span className="chatIcon"><IoChatbubbleEllipsesOutline /></span>
               </li>
             ))}
           </ul>

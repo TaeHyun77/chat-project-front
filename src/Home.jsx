@@ -3,7 +3,7 @@ import * as req from './api/req';
 import { useNavigate } from "react-router-dom";
 import { FuncModule } from "./FuncList";
 import Map from "./map.png";
-
+import { LoginContext } from "./LoginState";
 import {
   LineChart,
   Line,
@@ -18,6 +18,7 @@ import "./Home.css";
 import axios from "axios";
 import Header from "./Header";
 import Footer from "./Footer";
+import { IoCodeSlash } from "react-icons/io5";
 
 const Home = () => {
   const {
@@ -30,6 +31,7 @@ const Home = () => {
     getCongestionLevel,
   } = useContext(FuncModule);
   const navigate = useNavigate();
+  const { isLogin, userInfo } = useContext(LoginContext);
 
   const [departureData, setDepartureDataList] = useState([]);
   const [filteredToday, setFilteredToday] = useState([]);
@@ -121,6 +123,7 @@ const Home = () => {
   });
 
   const handleChatPage = () => {
+    if (!isLogin) return alert("로그인을 먼저 진행해주세요 !");
     navigate("/chatrooms");
   };
 
@@ -147,7 +150,10 @@ const Home = () => {
         </h2>
         <div className="departure-info">
           <p style={{ color: "blue" }}>
-            오늘로부터 이틀 간의 데이터를 제공합니다.{" "}
+            오늘로부터 이틀 간의 데이터를 제공합니다
+          </p>
+          <p style={{ color: "blue" }}>
+            날짜를 먼저 선택 후 출국장을 선택 해주세요
           </p>
           <p>7000명 미만 : 원활</p>
           <p>7001명 ~ 7600명: 보통</p>
