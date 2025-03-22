@@ -11,7 +11,7 @@
   font-family: Arial, sans-serif;
   background-color: white;
   border-radius: 20px;
-  width: 80%;
+  width: 60%;
   padding: 20px;
 }
 
@@ -62,8 +62,8 @@
 }
 
 .map {
-  width: 900px;
-  height: 500px;
+  width: 600px;
+  height: 400px;
 }
 
 .mapImg {
@@ -110,11 +110,43 @@ h2 {
 
 .data-row {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 2fr; /* 마지막 칸(시간)을 2배로 확대 */
   padding: 15px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1.2px solid green;
   text-align: center;
   align-items: center;
+}
+
+@media (max-width: 1800px) {
+  .data-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 왼쪽 정렬 */
+    padding: 10px;
+  }
+
+  /* 항목을 리스트 형식으로 변경 */
+  .data-row div {
+    display: flex;
+    width: 100%;
+    gap: 15px;
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .data-row div:last-child {
+    border-bottom: none;
+  }
+
+  /* 헤더 숨기기 */
+  .data-row.header {
+    display: none;
+  }
+
+  /* 시간 데이터 스타일 */
+  .plane-time p {
+    display: inline; /* 한 줄로 표시 */
+  }
 }
 
 .data-row.header {
@@ -148,6 +180,10 @@ h2 {
   margin: 0;
 }
 
+.plane-time {
+  padding-left: 20px;
+}
+
 /* 스크롤바 전체 영역 */
 .table-container::-webkit-scrollbar {
   width: 8px;
@@ -169,4 +205,26 @@ h2 {
 /* 스크롤바 핸들에 마우스 오버 시 */
 .table-container::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+@media (max-width: 1800px) {
+  .container {
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mapInfo {
+    width: 100%;
+    display: flex;        
+    flex-direction: column;  
+    align-items: center;     
+    justify-content: center; 
+    text-align: center;
+  }
+
+  .map {
+    width: 400px;
+    height: 300px;
+  }
 }

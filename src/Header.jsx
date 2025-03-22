@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import { LoginContext } from "./LoginState";
 import api from "./api/api";
-import axios from "axios";
 import Cookies from "js-cookie";
 import "./Header.css";
 import inLogo from "./Incheon.png";
@@ -33,7 +32,7 @@ const Header = () => {
     const check = window.confirm("로그아웃 하시겠습니까?");
     if (check) {
       try {
-        const response = await api.post("/googleLogout");
+        const response = await api.post("/api/googleLogout");
 
         if (response.data) {
           Cookies.remove("authorization");

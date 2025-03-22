@@ -11,7 +11,7 @@
   display: flex;
   justify-content: space-between; /* 양쪽 끝 정렬 */
   align-items: center;
-  width: 80%;
+  width: 60%;
   height: 150px;
   background-color: white;
   color: black; /* 글자 색 변경 */

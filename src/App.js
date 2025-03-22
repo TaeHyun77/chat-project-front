@@ -11,7 +11,7 @@ function App() {
       <LoginState>
         <FuncList>
           <Routes>
-            <Route path="/:roomId" element={<ChatRoomInfo />} />
+            <Route path="/api/:roomId" element={<ChatRoomInfo />} />
             <Route path="/chatrooms" element={<ChatRooms />} />
             <Route path="/" element={<Home />} />
           </Routes>

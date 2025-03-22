@@ -55,7 +55,7 @@ const ChatRooms = () => {
     if (!window.confirm("채팅에 참여하시겠습니까?")) return;
     if (!isLogin) return alert("로그인이 필요합니다!");
 
-    navigate(`/${roomId}`);
+    navigate(`/api/${roomId}`);
   };
 
   useEffect(() => {
