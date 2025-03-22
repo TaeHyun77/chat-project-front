@@ -1,19 +1,18 @@
 /* 전체 레이아웃 */
 .chatrooms-container {
-  width: 90%;
+  width: 60%;
   height: 900px;
   margin: 20px auto;
   font-family: Arial, sans-serif;
   background-color: white;
   border-radius: 20px;
-  width: 80%;
   padding: 20px;
 }
 /* 제목 */
 .chatrooms-title {
-  font-size: 25px;
+  font-size: 22px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .chatrooms-input-container {
@@ -39,26 +38,27 @@
 .chatrooms-input {
   padding: 10px;
   width: 300px;
-  height: 30px;
+  height: 20px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 10px;
   font-size: 14px;
   margin-bottom: 10px;
 }
 
 .chatrooms-button {
-  height: 50px;
+  height: 40px;
   padding: 10px 15px;
   background-color: rgb(21, 205, 222);
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 14px;
+  margin-bottom: 10px;
 }
 
 .chatrooms-button:hover {
-  background-color: #0056b3;
+  transform: scale(1.02);
 }
 
 /* 채팅방 목록 */
@@ -78,10 +78,10 @@
 .chatroom-item {
   display: flex;
   padding: 12px;
-  width: 400px;
+  width: 420px;
   background: white;
   border: 1px solid rgb(228, 219, 219);
-  border-radius: 5px;
+  border-radius: 10px;
   margin-bottom: 20px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -89,5 +89,5 @@
 }
 
 .chatroom-item:hover {
-  transform: scale(1.03);
+  transform: scale(1.01);
 }
