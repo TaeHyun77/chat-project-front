@@ -91,12 +91,12 @@ const Home = () => {
   
 
   const lineOptions = [
-    { key: "t1Depart12", label: "T1 출발 (1, 2번 게이트)" },
-    { key: "t1Depart3", label: "T1 출발 (3번 게이트)" },
-    { key: "t1Depart4", label: "T1 출발 (4번 게이트)" },
-    { key: "t1Depart56", label: "T1 출발 (5, 6번 게이트)" },
-    { key: "t2Depart1", label: "T2 출발 (1번 게이트)" },
-    { key: "t2Depart2", label: "T2 출발 (2번 게이트)" },
+    { key: "t1Depart12", label: "T1 (1, 2번 출국장)" },
+    { key: "t1Depart3", label: "T1 (3번 출국장)" },
+    { key: "t1Depart4", label: "T1 (4번 출국장)" },
+    { key: "t1Depart56", label: "T1 (5, 6번 출국장)" },
+    { key: "t2Depart1", label: "T2 (1번 출국장)" },
+    { key: "t2Depart2", label: "T2 (2번 출국장)" },
   ];
 
   const toggleSelection = (key) => {

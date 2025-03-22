@@ -10,7 +10,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { GoSignIn } from "react-icons/go";
 
-const SOCKET_URL = "http://localhost:8080/ws";
+const SOCKET_URL = "https://incheon-airport-info.site/ws";
 
 function Home() {
   const navigate = useNavigate();
