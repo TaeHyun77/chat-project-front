@@ -55,11 +55,10 @@
   cursor: pointer;
   font-size: 14px;
   transition: 0.3s;
-  width: 110px;
-  height: 40px;
+  width: 90px;
+  height: 35px;
 }
 
-/* 로그인 버튼 */
 .loginButton {
   background-color: #007bff;
   color: white;
@@ -69,7 +68,6 @@
   background-color: #0056b3;
 }
 
-/* 로그아웃 버튼 */
 .logoutButton {
   background-color: #dc3545;
   color: white;
@@ -79,9 +77,19 @@
   background-color: #a71d2a;
 }
 
-/* 로그인한 사용자 이름 */
 .loginName {
   font-size: 14px;
   font-weight: bold;
   margin-right: 10px;
+}
+
+.edit_member {
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+  color: red;
+}
+
+.edit_member:hover{
+  transform: scale(1.02);
 }
