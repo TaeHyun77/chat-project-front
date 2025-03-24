@@ -15,10 +15,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import "./Home.css";
-import axios from "axios";
 import Header from "./Header";
 import Footer from "./Footer";
-import { IoCodeSlash } from "react-icons/io5";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const Home = () => {
   const {
@@ -42,6 +42,8 @@ const Home = () => {
 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedDateList, setSelectedDateList] = useState(filteredToday);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const getDepartureData = async () => {
     try {
@@ -68,26 +70,23 @@ const Home = () => {
   };
 
   const getPlaneList = async () => {
+    setIsLoading(true); // 데이터 불러오기 시작 시 로딩 활성화
     try {
       const response = await req.planes();
-
-      const now = new Date(); // 현재 시간
-  
+      const now = new Date();
+      
       const filteredPlanes = response.data.filter((plane) => {
-
-        // 문자열(202503200005)을 날짜 객체로 변환
         const flightDate = new Date(
           `${plane.scheduleDatetime.substring(0, 4)}-${plane.scheduleDatetime.substring(4, 6)}-${plane.scheduleDatetime.substring(6, 8)}T${plane.scheduleDatetime.substring(8, 10)}:${plane.scheduleDatetime.substring(10, 12)}`
         );
-  
-        // 현재 시간보다 이전인지 확인 & remark 값이 "출발"인지 확인
         return !(flightDate < now && plane.remark === "출발");
       });
   
       setPlaneList(filteredPlanes);
-      console.log(filteredPlanes);
     } catch (error) {
       console.error("항공편 데이터 불러오는 중 오류 발생", error);
+    } finally {
+      setIsLoading(false); // 데이터 로드 완료 후 로딩 해제
     }
   };
   
@@ -260,51 +259,65 @@ const Home = () => {
         </div>
 
         <div className="table-container">
-          <div className="data-row header">
-            <div>항공편</div>
-            <div>항공사</div>
-            <div>탑승구</div>
-            <div>터미널</div>
-            <div>상태</div>
-            <div>시간</div>
+  <div className="data-row header">
+    <div>항공편</div>
+    <div>항공사</div>
+    <div>탑승구</div>
+    <div>터미널</div>
+    <div>상태</div>
+    <div>시간</div>
+  </div>
+  <div className="data-body">
+    {isLoading ? (
+      // Skeleton UI 적용
+      Array(8)
+        .fill()
+        .map((_, index) => (
+          <div className="data-row" key={index}>
+            <div><Skeleton width={80} height={20} /></div>
+            <div><Skeleton width={100} height={20} /></div>
+            <div><Skeleton width={50} height={20} /></div>
+            <div><Skeleton width={50} height={20} /></div>
+            <div><Skeleton width={80} height={20} /></div>
+            <div><Skeleton width={120} height={20} /></div>
           </div>
-          <div className="data-body">
-            {sortedFlights.map((plane, index) => (
-              <div className="data-row" key={index}>
-                <div>{plane.flightId}</div>
-                <div>{plane.airLine}</div>
-                <div>{plane.gateNumber == "" ? "미정" : plane.gateNumber + "번"}</div>
-                <div>{plane.terminalId}</div>
-                <div>{plane.remark == "null" ? "예정" : plane.remark}</div>
-                <div className="plane-time">
-                  {plane.scheduleDatetime === plane.estimatedDatetime ? (
-                    <>
-                      <p style={{ color: "red" }}>
-                        예정 시간 : {formatDateTime(plane.scheduleDatetime)}
-                      </p>
-                      <p>변경 내역 없음</p>
-                    </>
-                  ) : (
-                    <>
-                      <p style={{ color: "red" }}>
-                        예정 시간 : {formatDateTime(plane.scheduleDatetime)}
-                      </p>
-                      <p style={{ color: "blue" }}>
-                        변경 시간 : {formatDateTime(plane.estimatedDatetime)}
-                      </p>
-                      <p>
-                        {calculateDelay(
-                          plane.scheduleDatetime,
-                          plane.estimatedDatetime
-                        )}
-                      </p>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
+        ))
+    ) : (
+      sortedFlights.map((plane, index) => (
+        <div className="data-row" key={index}>
+          <div>{plane.flightId}</div>
+          <div>{plane.airLine}</div>
+          <div>{plane.gateNumber == "" ? "미정" : plane.gateNumber + "번"}</div>
+          <div>{plane.terminalId}</div>
+          <div>{plane.remark == "null" ? "예정" : plane.remark}</div>
+          <div className="plane-time">
+            {plane.scheduleDatetime === plane.estimatedDatetime ? (
+              <>
+                <p style={{ color: "red" }}>
+                  예정 시간 : {formatDateTime(plane.scheduleDatetime)}
+                </p>
+                <p>변경 내역 없음</p>
+              </>
+            ) : (
+              <>
+                <p style={{ color: "red" }}>
+                  예정 시간 : {formatDateTime(plane.scheduleDatetime)}
+                </p>
+                <p style={{ color: "blue" }}>
+                  변경 시간 : {formatDateTime(plane.estimatedDatetime)}
+                </p>
+                <p>
+                  {calculateDelay(plane.scheduleDatetime, plane.estimatedDatetime)}
+                </p>
+              </>
+            )}
           </div>
         </div>
+      ))
+    )}
+  </div>
+</div>
+
       </div>
 
       <div className="container" style={{ display: "flex" }}>
