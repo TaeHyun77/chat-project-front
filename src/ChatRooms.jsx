@@ -1,17 +1,20 @@
 import React, { useEffect, useState, useContext } from "react";
-import * as req from './api/req';
+import * as req from "./api/req";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "./LoginState";
 import Header from "./Header";
 import Footer from "./Footer";
 import "./ChatRooms.css";
-import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import Skeleton from "react-loading-skeleton";
+import { TbMessage2Minus } from "react-icons/tb";
 
 const ChatRooms = () => {
   const { userInfo, isLogin } = useContext(LoginContext);
 
   const [rooms, setRooms] = useState([]);
   const [newRoomName, setNewRoomName] = useState("");
+
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   const selectRooms = async () => {
@@ -22,6 +25,7 @@ const ChatRooms = () => {
     } catch (error) {
       console.error("채팅방을 불러오는 중 오류 발생:", error);
     }
+    setIsLoading(false);
   };
 
   const createRoom = async () => {
@@ -31,10 +35,12 @@ const ChatRooms = () => {
     const trimmedName = newRoomName.trim();
     if (!trimmedName) return;
 
+    console.log(userInfo?.name);
+
     const chatRoomInfo = {
-      chatRoomName : trimmedName,
-      creator : userInfo?.username
-    }
+      chatRoomName: trimmedName,
+      creator: userInfo?.username,
+    };
 
     try {
       const response = await req.createChatRoom(chatRoomInfo);
@@ -81,16 +87,27 @@ const ChatRooms = () => {
         </div>
         <div className="room-list">
           <ul className="chatrooms-list">
-            {rooms.map((room, index) => (
-              <li
-                key={room.id || room.chatRoomId || `room-${index}`}
-                className="chatroom-item"
-                onClick={() => enterRoom(room.chatRoomId)}
-              >
-                {room.chatRoomName}
-                <span className="chatIcon"><IoChatbubbleEllipsesOutline /></span>
-              </li>
-            ))}
+            {isLoading ? // 로딩 중이면 Skeleton UI 표시 
+                [...Array(5)].map((_, index) => (
+                  <li key={index} className="chatroom-item">
+                    <Skeleton height={40} width={400} />
+                  </li>
+                )) 
+              : 
+                rooms.map((room, index) => ( // 데이터가 로드되면 정상 목록 표시
+                  <li
+                    key={room.id || room.chatRoomId || `room-${index}`}
+                    className="chatroom-item"
+                    onClick={() => enterRoom(room.chatRoomId)}
+                  >
+                    <span className="chatIcon">
+                      <TbMessage2Minus />{" "}
+                      <span style={{ marginLeft: "5px" }}>
+                        {room.chatRoomName}
+                      </span>
+                    </span>
+                  </li>
+                ))}
           </ul>
         </div>
       </div>

@@ -54,6 +54,10 @@ const Header = () => {
     navigate("/");
   }
 
+  const handleEdit = () => {
+    navigate("/editMember");
+  }
+
   useEffect(() => {
     logincheck();
   }, []);
@@ -76,6 +80,7 @@ const Header = () => {
         </div>
       ) : (
         <div className="logContainer">
+          <p className="edit_member" onClick={handleEdit}>회원 정보 수정</p>
           <p className="loginName">환영해요 {userInfo?.name} 님 !</p>
           <button onClick={googleLogout} className="logoutButton">
             로그아웃

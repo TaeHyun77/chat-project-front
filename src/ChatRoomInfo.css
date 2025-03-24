@@ -1,6 +1,14 @@
+@font-face {
+  font-family: "Ownglyph_ParkDaHyun";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
 .chat-container {
   display: flex;
-  width: 80%;
+  width: 60%;
   height: 900px;
   margin: 0 auto;
   padding: 20px;
@@ -11,14 +19,31 @@
   background-color: white;
 }
 
+.chat-menu {
+  font-family: "Ownglyph_ParkDaHyun";
+  font-size: 22px;
+  height: 50px;
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+
+}
+
+.chatRoonInfo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+}
+
 .chat-box {
   display: flex;
   flex-direction: column;
-  width:45%;
+  width: 60%;
   height: 93%;
   background: white;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   margin-top: 50px;
 }
@@ -26,7 +51,7 @@
 .chat-header {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* 좌우 정렬 */
+  justify-content: space-between;
   align-items: center;
   padding: 15px;
   font-size: 18px;
@@ -35,16 +60,28 @@
   background: rgb(21, 205, 222);
   color: white;
   font-size: 15px;
-
+  border-radius: 10px;
 }
 
 .icon {
-  font-size: 20px;
+  display: flex;
+  align-items: center; 
+  justify-content: space-between; 
+  width: 100%; 
 }
 
-.icon:hover {
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.right-section {
+  font-size: 13px;
+}
+
+.left-section:hover {
   transform: scale(1.03);
-  color: red;
 }
 
 /* 메시지 목록 */
@@ -85,12 +122,12 @@
 }
 
 /* 내 메시지 (오른쪽 정렬) */
-.chat-message.mine  {
+.chat-message.mine {
   align-self: flex-end;
   border-radius: 15px;
 }
 
-.chat-message.mine .message-content  {
+.chat-message.mine .message-content {
   background: #41c914;
   color: white;
   border-radius: 15px 0 15px 15px;

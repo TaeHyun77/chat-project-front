@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useContext } from "react";
-import * as req from './api/req';
+import * as req from "./api/req";
 import { LoginContext } from "./LoginState";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
@@ -8,14 +8,18 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./ChatRoomInfo.css";
 import Header from "./Header";
 import Footer from "./Footer";
-import { GoSignIn } from "react-icons/go";
+import { IoIosArrowBack } from "react-icons/io";
 
-const SOCKET_URL = "https://incheon-airport-info.site/ws";
+// const SOCKET_URL = "https://incheon-airport-info.site/ws";
+const SOCKET_URL = "http://localhost:8080/ws";
 
 function Home() {
   const navigate = useNavigate();
   const { roomId } = useParams();
+  const [roomInfo, setRoomInfo] = useState({});
   const { userInfo } = useContext(LoginContext);
+  const [roomCreator, setRoomCreator] = useState();
+  const [roomCreatorNickname, setRoomCreatorNickname] = useState();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [accessToken, setAccessToken] = useState("");
@@ -38,6 +42,33 @@ function Home() {
       console.log(filteredMessages);
     } catch (error) {
       console.error("채팅 내역을 불러오는 중 오류 발생:", error);
+    }
+  };
+
+  const getRoomInfo = async () => {
+    try {
+      const response = await req.chatRoomInfo(roomId);
+
+      const { chatRoomName, creator, createdAt, modifiedAt } = response.data;
+
+      if (creator) {
+        getRoomCreatorInfo(creator);
+      }
+      setRoomInfo({ chatRoomName, creator, createdAt, modifiedAt });
+    } catch (error) {
+      console.error("채팅방 정보를 불러오는 중 오류 발생:", error);
+    }
+  };
+
+  const getRoomCreatorInfo = async (roomCreator) => {
+    try {
+      const response = await req.roomCreatorInfo(roomCreator);
+
+      const nickName = response.data;
+
+      setRoomCreatorNickname(nickName);
+    } catch (error) {
+      console.error("방 생성자 닉네임 정보를 불러오는 중 오류 발생:", error);
     }
   };
 
@@ -194,11 +225,22 @@ function Home() {
     });
   };
 
+  const formatDateTime = (dateTimeString) => {
+    if (dateTimeString) {
+      return dateTimeString
+        .split(":")
+        .slice(0, 2)
+        .join(":")
+        .replace(/\s+/g, "")
+        .replace("T", " ");
+    }
+  };
+
   const handleExit = () => {
     if (!window.confirm("채팅방을 나가시겠습니까 ?")) return;
 
-    navigate("/chatrooms")
-  }
+    navigate("/chatrooms");
+  };
 
   // 새로운 메시지가 추가될 때 자동으로 스크롤을 최신 메시지로 이동
   useEffect(() => {
@@ -212,18 +254,41 @@ function Home() {
     console.log("현재 채팅방 ID:", roomId);
   }, []);
 
+  useEffect(() => {
+    if (roomId) {
+      getRoomInfo();
+    }
+  }, [roomId]);
+
+  useEffect(() => {
+    if (roomId) {
+      getRoomCreatorInfo();
+    }
+  }, [roomId]);
+
   return (
     <>
       <Header />
       <div className="chat-container">
         <div className="chat-box">
+          <div className="chat-menu">
+            <span>{roomInfo.chatRoomName}</span>
+            <br />
+            <label className="chatRoonInfo" style={{marginTop:"10px"}}>
+              <span>
+                {roomCreatorNickname} ({roomInfo.creator})
+              </span>{" "}
+              <span>{formatDateTime(roomInfo.createdAt)}</span>
+            </label>
+          </div>
           <div className="chat-header">
-            <div className="icon" onClick={handleExit}>
-              <GoSignIn /> 
+            <div className="icon">
+              <div className="left-section" onClick={handleExit}>
+                <IoIosArrowBack />
+                <span>나가기</span>
+              </div>
+              <span className="right-section">접속자: {userCount}명</span>
             </div>
-            <span>
-              [ 현재 접속자: {userCount}명 ]
-            </span>
           </div>
 
           <div ref={chatContainerRef} className="chat-messages">
