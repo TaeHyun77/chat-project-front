@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "./LoginState";
-import * as req from "./api/req";
-import Header from "./Header";
-import Footer from "./Footer";
+import { LoginContext } from "../state/LoginState";
+import * as req from "../api/req";
+import Header from "../header/Header";
+import Footer from "../footer/Footer";
 import "./EditMember.css";
 
 const EditMember = () => {

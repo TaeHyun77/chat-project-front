@@ -1,12 +1,12 @@
 import React, { useContext, useEffect } from "react";
-import * as req from './api/req';
+import * as req from '../api/req';
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
-import { LoginContext } from "./LoginState";
-import api from "./api/api";
+import { LoginContext } from "../state/LoginState";
+import api from "../api/api";
 import Cookies from "js-cookie";
 import "./Header.css";
-import inLogo from "./Incheon.png";
+import inLogo from "../img/Incheon.png";
 
 const Header = () => {
   const { isLogin, setIsLogin, userInfo, setUserInfo, logincheck } =

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, createContext } from "react";
-import api from "./api/api";
+import api from "../api/api";
 import Cookies from "js-cookie";
-import * as req from './api/req';
+import * as req from '../api/req';
 
 export const LoginContext = createContext();
 
@@ -31,7 +31,7 @@ const LoginState = ({ children }) => {
       data = response.data;
 
       if (data === "UNAUTHORIZED" || response.status === 401) {
-        console.error("Access 토큰이 만료되거나 잘못되었습니다.");
+        console.error("Access 토큰이 만료되거나 잘못되었습니다 .. .. ");
         return;
       }
 

@@ -163,7 +163,11 @@ h2 {
 .departure-info {
   border-left: 3px solid red;
   padding-left: 10px;
-  font-size: 17px;
+  font-size: 15px;
+}
+
+.departure-info p {
+  margin: 10px 0;
 }
 
 .searchContainer input {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import * as req from "./api/req";
 import { useNavigate } from "react-router-dom";
-import { FuncModule } from "./FuncList";
-import Map from "./map.png";
-import { LoginContext } from "./LoginState";
+import { FuncModule } from "./state/FuncList";
+import Map from "./img/map.png";
+import { LoginContext } from "./state/LoginState";
 import {
   LineChart,
   Line,
@@ -15,8 +15,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import "./Home.css";
-import Header from "./Header";
-import Footer from "./Footer";
+import Header from "./header/Header";
+import Footer from "./footer/Footer";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -49,7 +49,6 @@ const Home = () => {
     try {
       const response = await req.departures();
 
-      console.log("res " + response.data);
       setDepartureDataList(response.data);
 
       const filteredToday = response.data.filter(
@@ -177,11 +176,11 @@ const Home = () => {
           <p style={{ color: "blue" }}>
             날짜를 먼저 선택 후 출국장을 선택 해주세요
           </p>
-          <p>7000명 미만 : 원활</p>
-          <p>7001명 ~ 7600명: 보통</p>
-          <p>7601명 ~ 8200명 : 약간 혼잡</p>
-          <p>8201명 ~ 8600명 : 혼잡</p>
-          <p>8601명 이상 : 매우 혼잡</p>
+          <p style={{ color: "red" }}>7000명 미만 : 원활</p>
+          <p style={{ color: "red" }}>7001명 ~ 7600명: 보통</p>
+          <p style={{ color: "red" }}>7601명 ~ 8200명 : 약간 혼잡</p>
+          <p style={{ color: "red" }}>8201명 ~ 8600명 : 혼잡</p>
+          <p style={{ color: "red" }}>8601명 이상 : 매우 혼잡</p>
         </div>
         <div className="chart-section">
           <div className="chart-filters">
