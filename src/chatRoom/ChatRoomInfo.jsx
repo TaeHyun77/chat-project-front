@@ -1,24 +1,23 @@
 import { useEffect, useRef, useState, useContext } from "react";
-import * as req from "./api/req";
-import { LoginContext } from "./LoginState";
+import * as req from "../api/req";
+import { LoginContext } from "../state/LoginState";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import Cookies from "js-cookie";
 import { useParams, useNavigate } from "react-router-dom";
-import "./ChatRoomInfo.css";
-import Header from "./Header";
-import Footer from "./Footer";
+import Header from "../header/Header";
+import Footer from "../footer/Footer";
 import { IoIosArrowBack } from "react-icons/io";
+import "./ChatRoomInfo.css";
 
-// const SOCKET_URL = "https://incheon-airport-info.site/ws";
-const SOCKET_URL = "http://localhost:8080/ws";
+//const SOCKET_URL = "https://incheon-airport-info.site/ws"; // Ec2
+const SOCKET_URL = "http://localhost:8080/ws"; // 로컬
 
-function Home() {
+const ChatRoomInfo = () => {
   const navigate = useNavigate();
   const { roomId } = useParams();
   const [roomInfo, setRoomInfo] = useState({});
   const { userInfo } = useContext(LoginContext);
-  const [roomCreator, setRoomCreator] = useState();
   const [roomCreatorNickname, setRoomCreatorNickname] = useState();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -28,6 +27,8 @@ function Home() {
   const chatContainerRef = useRef(null);
   const [userCount, setUserCount] = useState(0);
   const [allUserCount, setAllUserCount] = useState(0);
+
+  const [isRoomDeleted, setIsRoomDeleted] = useState(false);
 
   const getChatList = async () => {
     try {
@@ -51,24 +52,61 @@ function Home() {
 
       const { chatRoomName, creator, createdAt, modifiedAt } = response.data;
 
+      setRoomInfo({ chatRoomName, creator, createdAt, modifiedAt });
+
       if (creator) {
         getRoomCreatorInfo(creator);
       }
-      setRoomInfo({ chatRoomName, creator, createdAt, modifiedAt });
     } catch (error) {
       console.error("채팅방 정보를 불러오는 중 오류 발생:", error);
     }
   };
 
   const getRoomCreatorInfo = async (roomCreator) => {
+    if (!roomCreator) {
+      console.error("roomCreator 값이 없습니다!");
+      return;
+    }
+
     try {
       const response = await req.roomCreatorInfo(roomCreator);
 
-      const nickName = response.data;
-
-      setRoomCreatorNickname(nickName);
+      setRoomCreatorNickname(response.data);
     } catch (error) {
       console.error("방 생성자 닉네임 정보를 불러오는 중 오류 발생:", error);
+    }
+  };
+
+  const deleteRoom = async (roomId) => {
+    if (userInfo?.username != roomInfo?.creator) {
+      alert("방 생성자가 아닙니다.");
+      return;
+    }
+
+    const check = window.confirm("채팅방을 삭제 하시겠습니까? ?");
+
+    if (check) {
+      try {
+        const response = await req.deleteRoom(roomId);
+
+        if (response.status == 200) {
+
+          setIsRoomDeleted(true);
+          
+          if (stompClientRef.current) {
+            stompClientRef.current.publish({
+              destination: `/topic/chat/delete/${roomId}`,
+              body: "방 삭제됨",
+            });
+          }
+
+          navigate("/chatRooms");
+        } else {
+          alert("채팅 방 삭제 중 오류 발생 ..");
+        }
+      } catch (error) {
+        console.error("채팅방 삭제 중 오류 발생", error);
+      }
     }
   };
 
@@ -88,6 +126,17 @@ function Home() {
       onConnect: () => {
         console.log("[STOMP] 연결 성공: ", stompClient);
 
+        stompClient.subscribe(`/topic/chat/delete/${roomId}`, (message) => {
+          console.log("[STOMP] 채팅방 삭제 메시지 수신:", message.body);
+
+          if (message.body === "방 삭제됨") {
+            alert("채팅방이 삭제되었습니다.");
+
+            // 채팅방 삭제 시 이동
+            navigate("/chatRooms"); 
+          }
+        });
+        
         // 특정 채팅방 [구독]
         stompClient.subscribe(`/topic/chat/${roomId}`, (message) => {
           if (message.body) {
@@ -164,7 +213,8 @@ function Home() {
     return () => {
       console.log("[STOMP] 채팅방 나감, 퇴장 메시지 전송 후 연결 해제");
 
-      if (stompClientRef.current && stompClientRef.current.connected) {
+      if (!isRoomDeleted && stompClientRef.current && stompClientRef.current.connected) {
+
         const exitMessage = {
           chatType: "EXIT",
           accessToken: `Bearer ${token}`,
@@ -261,10 +311,10 @@ function Home() {
   }, [roomId]);
 
   useEffect(() => {
-    if (roomId) {
-      getRoomCreatorInfo();
+    if (roomInfo.creator) {
+      getRoomCreatorInfo(roomInfo.creator);
     }
-  }, [roomId]);
+  }, [roomInfo.creator]);
 
   return (
     <>
@@ -274,11 +324,16 @@ function Home() {
           <div className="chat-menu">
             <span>{roomInfo.chatRoomName}</span>
             <br />
-            <label className="chatRoonInfo" style={{marginTop:"10px"}}>
+            <label className="chatRoonInfo" style={{ marginTop: "10px" }}>
               <span>
                 {roomCreatorNickname} ({roomInfo.creator})
               </span>{" "}
-              <span>{formatDateTime(roomInfo.createdAt)}</span>
+              <span className="chatRoomDelete">
+                {formatDateTime(roomInfo.createdAt)}
+                {userInfo?.username === roomInfo.creator && (
+                  <span onClick={() => deleteRoom(roomId)}>채팅방 삭제</span>
+                )}
+              </span>
             </label>
           </div>
           <div className="chat-header">
@@ -345,6 +400,6 @@ function Home() {
       <Footer />
     </>
   );
-}
+};
 
-export default Home;
+export default ChatRoomInfo;

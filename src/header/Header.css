@@ -60,6 +60,7 @@
 }
 
 .loginButton {
+  width: 110px;
   background-color: #007bff;
   color: white;
 }

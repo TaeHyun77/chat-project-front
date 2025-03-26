@@ -30,6 +30,12 @@
 
 }
 
+.chatRoomDelete span{
+  color: red;
+  margin-left: 10px;
+  border-bottom: 0.5px solid red;
+}
+
 .chatRoonInfo {
   display: flex;
   justify-content: space-between;

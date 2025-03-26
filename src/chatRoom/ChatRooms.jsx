@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
-import * as req from "./api/req";
+import * as req from "../api/req";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "./LoginState";
-import Header from "./Header";
-import Footer from "./Footer";
+import { LoginContext } from "../state/LoginState";
+import Header from "../header/Header";
+import Footer from "../footer/Footer";
 import "./ChatRooms.css";
 import Skeleton from "react-loading-skeleton";
 import { TbMessage2Minus } from "react-icons/tb";
@@ -33,7 +33,10 @@ const ChatRooms = () => {
     if (!isLogin) return alert("로그인이 필요합니다!"), setNewRoomName("");
 
     const trimmedName = newRoomName.trim();
-    if (!trimmedName) return;
+    if (!trimmedName) {
+      alert("채팅방 이름을 입력 해주세요")
+      return;
+    }
 
     console.log(userInfo?.name);
 
@@ -60,7 +63,7 @@ const ChatRooms = () => {
     if (!window.confirm("채팅에 참여하시겠습니까?")) return;
     if (!isLogin) return alert("로그인이 필요합니다!");
 
-    navigate(`/api/${roomId}`);
+    navigate(`/room/${roomId}`);
   };
 
   useEffect(() => {
