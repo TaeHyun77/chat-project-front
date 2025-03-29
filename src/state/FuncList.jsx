@@ -3,6 +3,8 @@ import React, { useEffect, useState, createContext } from "react";
 export const FuncModule = createContext();
 
 const FuncList = ({ children }) => {
+
+  // 오늘 날짜를 YYYYMMDD 형식으로 반환하는 함수
   const getFormattedDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -11,6 +13,7 @@ const FuncList = ({ children }) => {
     return `${year}${month}${day}`;
   };
 
+  // 내일 날짜를 YYYYMMDD 형식으로 반환하는 함수
   const getTomorrowDate = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -20,6 +23,7 @@ const FuncList = ({ children }) => {
     return `${year}${month}${day}`;
   };
 
+  // 모레 날짜를 YYYYMMDD 형식으로 반환하는 함수
   const get2LaterDate = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 2);
@@ -29,6 +33,7 @@ const FuncList = ({ children }) => {
     return `${year}${month}${day}`;
   };
 
+  // 
   const formatDateTime = (dateTime) => {
     if (!dateTime || dateTime.length !== 12) return dateTime;
     const year = dateTime.substring(0, 4);
@@ -39,10 +44,23 @@ const FuncList = ({ children }) => {
     return `${year}-${month}-${day} ${hour}:${minute}`;
   };
 
+  // 
   const formatDateTime2 = (dateTime) => {
     const day = dateTime.substring(0, 2);
     const hour = dateTime.substring(2, 4);
     return `${day}월 ${hour}일`;
+  };
+
+  // 2025-03-25T20:42:35.305122 ( LocalDateTime ) -> 2025-03-25 20:42
+  const formatDateTime3 = (dateTimeString) => {
+    if (dateTimeString) {
+      return dateTimeString
+        .split(":")
+        .slice(0, 2)
+        .join(":")
+        .replace(/\s+/g, "")
+        .replace("T", " ");
+    }
   };
 
   const calculateDelay = (schedule, estimated) => {
@@ -96,6 +114,7 @@ const FuncList = ({ children }) => {
         formatDateTime2,
         calculateDelay,
         getCongestionLevel,
+        formatDateTime3
       }}
     >
       {children}
