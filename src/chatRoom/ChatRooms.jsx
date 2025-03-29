@@ -6,10 +6,12 @@ import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import "./ChatRooms.css";
 import Skeleton from "react-loading-skeleton";
+import { FuncModule } from "../state/FuncList";
 import { TbMessage2Minus } from "react-icons/tb";
 
 const ChatRooms = () => {
   const { userInfo, isLogin } = useContext(LoginContext);
+  const { formatDateTime3 } = useContext(FuncModule);
 
   const [rooms, setRooms] = useState([]);
   const [newRoomName, setNewRoomName] = useState("");
@@ -34,7 +36,7 @@ const ChatRooms = () => {
 
     const trimmedName = newRoomName.trim();
     if (!trimmedName) {
-      alert("채팅방 이름을 입력 해주세요")
+      alert("채팅방 이름을 입력 해주세요");
       return;
     }
 
@@ -90,27 +92,39 @@ const ChatRooms = () => {
         </div>
         <div className="room-list">
           <ul className="chatrooms-list">
-            {isLoading ? // 로딩 중이면 Skeleton UI 표시 
-                [...Array(5)].map((_, index) => (
+            {isLoading // 로딩 중이면 Skeleton UI 표시
+              ? [...Array(5)].map((_, index) => (
                   <li key={index} className="chatroom-item">
                     <Skeleton height={40} width={400} />
                   </li>
-                )) 
-              : 
-                rooms.map((room, index) => ( // 데이터가 로드되면 정상 목록 표시
-                  <li
-                    key={room.id || room.chatRoomId || `room-${index}`}
-                    className="chatroom-item"
-                    onClick={() => enterRoom(room.chatRoomId)}
-                  >
-                    <span className="chatIcon">
-                      <TbMessage2Minus />{" "}
-                      <span style={{ marginLeft: "5px" }}>
-                        {room.chatRoomName}
-                      </span>
-                    </span>
-                  </li>
-                ))}
+                ))
+              : rooms.map(
+                  (
+                    room,
+                    index // 데이터가 로드되면 정상 목록 표시
+                  ) => (
+                    <li
+                      className="chatroom-item"
+                      onClick={() => enterRoom(room.chatRoomId)}
+                    >
+                      <div className="chatroom-content">
+                        <div className="chatroom-header">
+                          <TbMessage2Minus />
+                          <span className="chatroom-title">
+                            {room.chatRoomName}
+                          </span>
+                        </div>
+
+                        <div className="chatroom-meta">
+                          <span>
+                            {room.member.name} -{" "}
+                            {formatDateTime3(room.createdAt)}
+                          </span>
+                        </div>
+                      </div>
+                    </li>
+                  )
+                )}
           </ul>
         </div>
       </div>

@@ -13,7 +13,7 @@ const LoginState = ({ children }) => {
   const logincheck = async () => {
 
     const accessToken = Cookies.get("authorization");
-    console.log(accessToken);
+    if (accessToken) console.log("access 토큰 존재")
 
     if (!accessToken) {
         console.log("access 토큰이 없습니다.")

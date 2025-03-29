@@ -8,9 +8,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import { IoIosArrowBack } from "react-icons/io";
+import { FuncModule } from "../state/FuncList";
+
 import "./ChatRoomInfo.css";
 
-//const SOCKET_URL = "https://incheon-airport-info.site/ws"; // Ec2
+// const SOCKET_URL = "https://incheon-airport-info.site/ws"; // Ec2
 const SOCKET_URL = "http://localhost:8080/ws"; // 로컬
 
 const ChatRoomInfo = () => {
@@ -30,6 +32,8 @@ const ChatRoomInfo = () => {
 
   const [isRoomDeleted, setIsRoomDeleted] = useState(false);
 
+  const { formatDateTime3 } = useContext(FuncModule);
+
   const getChatList = async () => {
     try {
       const response = await req.enterChatRoom(roomId);
@@ -47,6 +51,7 @@ const ChatRoomInfo = () => {
   };
 
   const getRoomInfo = async () => {
+
     try {
       const response = await req.chatRoomInfo(roomId);
 
@@ -90,9 +95,8 @@ const ChatRoomInfo = () => {
         const response = await req.deleteRoom(roomId);
 
         if (response.status == 200) {
-
           setIsRoomDeleted(true);
-          
+
           if (stompClientRef.current) {
             stompClientRef.current.publish({
               destination: `/topic/chat/delete/${roomId}`,
@@ -133,10 +137,10 @@ const ChatRoomInfo = () => {
             alert("채팅방이 삭제되었습니다.");
 
             // 채팅방 삭제 시 이동
-            navigate("/chatRooms"); 
+            navigate("/chatRooms");
           }
         });
-        
+
         // 특정 채팅방 [구독]
         stompClient.subscribe(`/topic/chat/${roomId}`, (message) => {
           if (message.body) {
@@ -213,8 +217,11 @@ const ChatRoomInfo = () => {
     return () => {
       console.log("[STOMP] 채팅방 나감, 퇴장 메시지 전송 후 연결 해제");
 
-      if (!isRoomDeleted && stompClientRef.current && stompClientRef.current.connected) {
-
+      if (
+        !isRoomDeleted &&
+        stompClientRef.current &&
+        stompClientRef.current.connected
+      ) {
         const exitMessage = {
           chatType: "EXIT",
           accessToken: `Bearer ${token}`,
@@ -275,17 +282,6 @@ const ChatRoomInfo = () => {
     });
   };
 
-  const formatDateTime = (dateTimeString) => {
-    if (dateTimeString) {
-      return dateTimeString
-        .split(":")
-        .slice(0, 2)
-        .join(":")
-        .replace(/\s+/g, "")
-        .replace("T", " ");
-    }
-  };
-
   const handleExit = () => {
     if (!window.confirm("채팅방을 나가시겠습니까 ?")) return;
 
@@ -329,7 +325,7 @@ const ChatRoomInfo = () => {
                 {roomCreatorNickname} ({roomInfo.creator})
               </span>{" "}
               <span className="chatRoomDelete">
-                {formatDateTime(roomInfo.createdAt)}
+                {formatDateTime3(roomInfo.createdAt)}
                 {userInfo?.username === roomInfo.creator && (
                   <span onClick={() => deleteRoom(roomId)}>채팅방 삭제</span>
                 )}
