@@ -19,7 +19,7 @@ const ChatRooms = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  const selectRooms = async () => {
+  const getChatRooms = async () => {
     try {
       const response = await req.chatRooms();
       setRooms(response.data);
@@ -40,8 +40,6 @@ const ChatRooms = () => {
       return;
     }
 
-    console.log(userInfo?.name);
-
     const chatRoomInfo = {
       chatRoomName: trimmedName,
       creator: userInfo?.username,
@@ -50,12 +48,10 @@ const ChatRooms = () => {
     try {
       const response = await req.createChatRoom(chatRoomInfo);
 
-      console.log("새로운 채팅방:", response.data);
-
       setRooms((prev) => [...prev, response.data]); // 상태 업데이트
       setNewRoomName("");
 
-      await selectRooms(); // 방을 다시 불러와 최신 상태 유지
+      await getChatRooms(); // 방을 다시 불러와 최신 상태 유지
     } catch (error) {
       console.error("채팅방 생성 오류:", error);
     }
@@ -69,7 +65,7 @@ const ChatRooms = () => {
   };
 
   useEffect(() => {
-    selectRooms();
+    getChatRooms();
   }, []);
 
   return (
@@ -105,19 +101,19 @@ const ChatRooms = () => {
                   ) => (
                     <li
                       className="chatroom-item"
-                      onClick={() => enterRoom(room.chatRoomId)}
+                      onClick={() => enterRoom(room?.chatRoomId)}
                     >
                       <div className="chatroom-content">
                         <div className="chatroom-header">
                           <TbMessage2Minus />
                           <span className="chatroom-title">
-                            {room.chatRoomName}
+                            {room?.chatRoomName}
                           </span>
                         </div>
 
                         <div className="chatroom-meta">
                           <span>
-                            {room.member.name} -{" "}
+                            {room?.member?.name} -{" "}
                             {formatDateTime3(room.createdAt)}
                           </span>
                         </div>
