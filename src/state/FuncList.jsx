@@ -33,7 +33,7 @@ const FuncList = ({ children }) => {
     return `${year}${month}${day}`;
   };
 
-  // 
+  // YYYYMMDDhhmm -> YYYY-MM-DD hh:mm
   const formatDateTime = (dateTime) => {
     if (!dateTime || dateTime.length !== 12) return dateTime;
     const year = dateTime.substring(0, 4);
@@ -44,7 +44,7 @@ const FuncList = ({ children }) => {
     return `${year}-${month}-${day} ${hour}:${minute}`;
   };
 
-  // 
+  // YYYYMMDDhhmm -> M월 D일
   const formatDateTime2 = (dateTime) => {
     const day = dateTime.substring(0, 2);
     const hour = dateTime.substring(2, 4);
@@ -63,6 +63,16 @@ const FuncList = ({ children }) => {
     }
   };
 
+  const formatTime = (timestamp) => {
+    if (!timestamp) return "";
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString("ko-KR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  // 
   const calculateDelay = (schedule, estimated) => {
     const scheduleDate = new Date(
       `${schedule.substring(0, 4)}-${schedule.substring(
@@ -114,7 +124,8 @@ const FuncList = ({ children }) => {
         formatDateTime2,
         calculateDelay,
         getCongestionLevel,
-        formatDateTime3
+        formatDateTime3,
+        formatTime
       }}
     >
       {children}

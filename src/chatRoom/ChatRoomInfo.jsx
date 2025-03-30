@@ -3,7 +3,6 @@ import * as req from "../api/req";
 import { LoginContext } from "../state/LoginState";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import Cookies from "js-cookie";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
@@ -16,14 +15,13 @@ import "./ChatRoomInfo.css";
 const SOCKET_URL = "http://localhost:8080/ws"; // 로컬
 
 const ChatRoomInfo = () => {
+  const { userInfo } = useContext(LoginContext);
+  const { formatDateTime3, formatTime } = useContext(FuncModule);
   const navigate = useNavigate();
   const { roomId } = useParams();
   const [roomInfo, setRoomInfo] = useState({});
-  const { userInfo } = useContext(LoginContext);
-  const [roomCreatorNickname, setRoomCreatorNickname] = useState();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [accessToken, setAccessToken] = useState("");
   const stompClientRef = useRef(null);
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
@@ -32,53 +30,18 @@ const ChatRoomInfo = () => {
 
   const [isRoomDeleted, setIsRoomDeleted] = useState(false);
 
-  const { formatDateTime3 } = useContext(FuncModule);
-
-  const getChatList = async () => {
-    try {
-      const response = await req.enterChatRoom(roomId);
-
-      const filteredMessages = response.data.filter(
-        (message) => message.chatType !== "ENTER" && message.chatType !== "EXIT"
-      );
-
-      // 기존 채팅 내역을 반영, 이전의 ENTER, EXIT 메세지는 filter
-      setMessages(filteredMessages);
-      console.log(filteredMessages);
-    } catch (error) {
-      console.error("채팅 내역을 불러오는 중 오류 발생:", error);
-    }
-  };
-
   const getRoomInfo = async () => {
 
     try {
       const response = await req.chatRoomInfo(roomId);
 
-      const { chatRoomName, creator, createdAt, modifiedAt } = response.data;
+      const { id, chatRoomName, creator, member, chats, createdAt, modifiedAt } = response.data;
 
-      setRoomInfo({ chatRoomName, creator, createdAt, modifiedAt });
+      console.log("asdadad" + chats)
+      setRoomInfo({ id, chatRoomName, creator, member, chats, createdAt, modifiedAt });
 
-      if (creator) {
-        getRoomCreatorInfo(creator);
-      }
     } catch (error) {
       console.error("채팅방 정보를 불러오는 중 오류 발생:", error);
-    }
-  };
-
-  const getRoomCreatorInfo = async (roomCreator) => {
-    if (!roomCreator) {
-      console.error("roomCreator 값이 없습니다!");
-      return;
-    }
-
-    try {
-      const response = await req.roomCreatorInfo(roomCreator);
-
-      setRoomCreatorNickname(response.data);
-    } catch (error) {
-      console.error("방 생성자 닉네임 정보를 불러오는 중 오류 발생:", error);
     }
   };
 
@@ -115,13 +78,8 @@ const ChatRoomInfo = () => {
   };
 
   useEffect(() => {
-    getChatList();
 
     const socket = new SockJS(SOCKET_URL);
-
-    const token = Cookies.get("authorization");
-    setAccessToken(token);
-    console.log(token);
 
     const stompClient = new Client({
       webSocketFactory: () => socket,
@@ -175,13 +133,14 @@ const ChatRoomInfo = () => {
           destination: "/app/chat/userCnt",
         });
 
-        if (!sessionStorage.getItem(`entered-${roomId}`)) {
+        if (!localStorage.getItem(`entered-${roomId}`)) {
           console.log("[STOMP] 입장 메시지 전송");
 
           // 입장 메세지 정보
           const enterMessage = {
             chatType: "ENTER",
-            accessToken: `Bearer ${token}`,
+            username: userInfo?.username,
+            nickName:userInfo?.nickName,
             roomId: roomId,
           };
 
@@ -191,7 +150,7 @@ const ChatRoomInfo = () => {
             body: JSON.stringify(enterMessage),
           });
 
-          sessionStorage.setItem(`entered-${roomId}`, "true");
+          localStorage.setItem(`entered-${roomId}`, "true");
         }
       },
 
@@ -224,7 +183,8 @@ const ChatRoomInfo = () => {
       ) {
         const exitMessage = {
           chatType: "EXIT",
-          accessToken: `Bearer ${token}`,
+          username: userInfo?.username,
+          nickName:userInfo?.nickName,
           roomId: roomId,
         };
 
@@ -239,7 +199,7 @@ const ChatRoomInfo = () => {
 
       // WebSocket 연결 해제
       stompClient.deactivate();
-      sessionStorage.removeItem(`entered-${roomId}`);
+      localStorage.removeItem(`entered-${roomId}`);
     };
   }, [roomId]);
 
@@ -259,7 +219,8 @@ const ChatRoomInfo = () => {
     const newMessage = {
       chatType: "TALK",
       content: message,
-      accessToken: `Bearer ${accessToken}`,
+      username: userInfo?.username,
+      nickName:userInfo?.nickName,
       createdAt: koreaTime,
       roomId: roomId,
     };
@@ -271,15 +232,6 @@ const ChatRoomInfo = () => {
 
     setMessage("");
     inputRef.current?.focus();
-  };
-
-  const formatTime = (timestamp) => {
-    if (!timestamp) return "";
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString("ko-KR", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
   };
 
   const handleExit = () => {
@@ -297,20 +249,21 @@ const ChatRoomInfo = () => {
   }, [messages]);
 
   useEffect(() => {
-    console.log("현재 채팅방 ID:", roomId);
-  }, []);
-
-  useEffect(() => {
     if (roomId) {
       getRoomInfo();
     }
   }, [roomId]);
 
   useEffect(() => {
-    if (roomInfo.creator) {
-      getRoomCreatorInfo(roomInfo.creator);
+    if (roomInfo?.chats) {
+
+      const filteredMessages = roomInfo.chats.filter(
+        (message) => message.chatType !== "ENTER" && message.chatType !== "EXIT"
+      );
+
+      setMessages(filteredMessages);
     }
-  }, [roomInfo.creator]);
+  }, [roomInfo]);
 
   return (
     <>
@@ -322,11 +275,11 @@ const ChatRoomInfo = () => {
             <br />
             <label className="chatRoonInfo" style={{ marginTop: "10px" }}>
               <span>
-                {roomCreatorNickname} ({roomInfo.creator})
+                {roomInfo?.member?.nickName} ({roomInfo?.member?.username})
               </span>{" "}
               <span className="chatRoomDelete">
                 {formatDateTime3(roomInfo.createdAt)}
-                {userInfo?.username === roomInfo.creator && (
+                {userInfo?.username === roomInfo?.member?.username && (
                   <span onClick={() => deleteRoom(roomId)}>채팅방 삭제</span>
                 )}
               </span>
@@ -349,14 +302,14 @@ const ChatRoomInfo = () => {
                 className={`chat-message ${
                   msg.chatType === "ENTER" || msg.chatType === "EXIT"
                     ? "enter-message"
-                    : msg.username === userInfo?.username
+                    : msg.member.username === userInfo?.username
                     ? "mine"
                     : "other"
                 }`}
               >
                 {msg.chatType === "ENTER" || msg.chatType === "EXIT" ? (
                   <div className="enter-message-content">{msg.content}</div>
-                ) : msg.username === userInfo?.username ? ( // 내꺼
+                ) : msg.member.username === userInfo?.username ? ( // 내꺼
                   <div className="message-wrapper">
                     <div className="message-content">{msg.content}</div>
                     <div className="message-timestamp mine-timestamp">
@@ -366,7 +319,7 @@ const ChatRoomInfo = () => {
                 ) : (
                   // 상대꺼
                   <div className="message-wrapper">
-                    <div className="message-username">{msg.name}</div>
+                    <div className="message-username">{msg.member.name}</div>
                     <div className="message-content">{msg.content}</div>
                     <div className="message-timestamp other-timestamp">
                       {formatTime(msg.createdAt)}
