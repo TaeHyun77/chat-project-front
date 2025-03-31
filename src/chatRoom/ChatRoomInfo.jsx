@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState, useContext } from "react";
-import * as req from "../api/req";
-import { LoginContext } from "../state/LoginState";
-import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
 import { useParams, useNavigate } from "react-router-dom";
+import { LoginContext } from "../state/LoginState";
+import { FuncModule } from "../state/FuncList";
+import * as req from "../api/req";
+import { Client } from "@stomp/stompjs";
+
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
+
+import SockJS from "sockjs-client";
+import Skeleton from "react-loading-skeleton";
 import { IoIosArrowBack } from "react-icons/io";
-import { FuncModule } from "../state/FuncList";
 
 import "./ChatRoomInfo.css";
 
-// const SOCKET_URL = "https://incheon-airport-info.site/ws"; // Ec2
-const SOCKET_URL = "http://localhost:8080/ws"; // 로컬
+const SOCKET_URL = "https://incheon-airport-info.site/ws"; // Ec2
+//const SOCKET_URL = "http://localhost:8080/ws"; // 로컬
 
 const ChatRoomInfo = () => {
   const { userInfo } = useContext(LoginContext);
@@ -30,18 +33,28 @@ const ChatRoomInfo = () => {
 
   const [isRoomDeleted, setIsRoomDeleted] = useState(false);
 
-  const getRoomInfo = async () => {
+  const [isLoading, setIsLoading] = useState(true);
 
+  const getRoomInfo = async () => {
     try {
       const response = await req.chatRoomInfo(roomId);
 
-      const { id, chatRoomName, creator, member, chats, createdAt, modifiedAt } = response.data;
+      const { chatRoomName, creator, member, chats, createdAt, modifiedAt } =
+        response.data;
 
-      console.log("asdadad" + chats)
-      setRoomInfo({ id, chatRoomName, creator, member, chats, createdAt, modifiedAt });
-
+      console.log("asdadad" + chats);
+      setRoomInfo({
+        chatRoomName,
+        creator,
+        member,
+        chats,
+        createdAt,
+        modifiedAt,
+      });
     } catch (error) {
       console.error("채팅방 정보를 불러오는 중 오류 발생:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,7 +91,6 @@ const ChatRoomInfo = () => {
   };
 
   useEffect(() => {
-
     const socket = new SockJS(SOCKET_URL);
 
     const stompClient = new Client({
@@ -140,7 +152,7 @@ const ChatRoomInfo = () => {
           const enterMessage = {
             chatType: "ENTER",
             username: userInfo?.username,
-            nickName:userInfo?.nickName,
+            nickName: userInfo?.nickName,
             roomId: roomId,
           };
 
@@ -184,7 +196,7 @@ const ChatRoomInfo = () => {
         const exitMessage = {
           chatType: "EXIT",
           username: userInfo?.username,
-          nickName:userInfo?.nickName,
+          nickName: userInfo?.nickName,
           roomId: roomId,
         };
 
@@ -220,7 +232,7 @@ const ChatRoomInfo = () => {
       chatType: "TALK",
       content: message,
       username: userInfo?.username,
-      nickName:userInfo?.nickName,
+      nickName: userInfo?.nickName,
       createdAt: koreaTime,
       roomId: roomId,
     };
@@ -256,7 +268,6 @@ const ChatRoomInfo = () => {
 
   useEffect(() => {
     if (roomInfo?.chats) {
-
       const filteredMessages = roomInfo.chats.filter(
         (message) => message.chatType !== "ENTER" && message.chatType !== "EXIT"
       );
@@ -271,19 +282,27 @@ const ChatRoomInfo = () => {
       <div className="chat-container">
         <div className="chat-box">
           <div className="chat-menu">
-            <span>{roomInfo.chatRoomName}</span>
-            <br />
-            <label className="chatRoonInfo" style={{ marginTop: "10px" }}>
-              <span>
-                {roomInfo?.member?.nickName} ({roomInfo?.member?.username})
-              </span>{" "}
-              <span className="chatRoomDelete">
-                {formatDateTime3(roomInfo.createdAt)}
-                {userInfo?.username === roomInfo?.member?.username && (
-                  <span onClick={() => deleteRoom(roomId)}>채팅방 삭제</span>
-                )}
-              </span>
-            </label>
+            {isLoading ? (
+              <Skeleton width={150} height={15} />
+            ) : (
+              <>
+                <span>{roomInfo.chatRoomName}</span>
+                <br />
+                <label className="chatRoonInfo" style={{ marginTop: "10px" }}>
+                  <span>
+                    {roomInfo?.member?.nickName} ({roomInfo?.member?.username})
+                  </span>{" "}
+                  <span className="chatRoomDelete">
+                    {formatDateTime3(roomInfo.createdAt)}
+                    {userInfo?.username === roomInfo?.member?.username && (
+                      <span onClick={() => deleteRoom(roomId)}>
+                        채팅방 삭제
+                      </span>
+                    )}
+                  </span>
+                </label>
+              </>
+            )}
           </div>
           <div className="chat-header">
             <div className="icon">
@@ -296,38 +315,50 @@ const ChatRoomInfo = () => {
           </div>
 
           <div ref={chatContainerRef} className="chat-messages">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`chat-message ${
-                  msg.chatType === "ENTER" || msg.chatType === "EXIT"
-                    ? "enter-message"
-                    : msg.member.username === userInfo?.username
-                    ? "mine"
-                    : "other"
-                }`}
-              >
-                {msg.chatType === "ENTER" || msg.chatType === "EXIT" ? (
-                  <div className="enter-message-content">{msg.content}</div>
-                ) : msg.member.username === userInfo?.username ? ( // 내꺼
-                  <div className="message-wrapper">
-                    <div className="message-content">{msg.content}</div>
-                    <div className="message-timestamp mine-timestamp">
-                      {formatTime(msg.createdAt)}
-                    </div>
+            {isLoading
+              ? Array.from({ length: 10 }).map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    height={30}
+                    width="90%"
+                    style={{ marginBottom: "10px" }}
+                  />
+                ))
+              : messages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`chat-message ${
+                      msg?.chatType === "ENTER" || msg?.chatType === "EXIT"
+                        ? "enter-message"
+                        : msg?.member?.username === userInfo?.username
+                        ? "mine"
+                        : "other"
+                    }`}
+                  >
+                    {msg?.chatType === "ENTER" || msg?.chatType === "EXIT" ? (
+                      <div className="enter-message-content">
+                        {msg?.content}
+                      </div>
+                    ) : msg?.member?.username === userInfo?.username ? (
+                      <div className="message-wrapper">
+                        <div className="message-content">{msg?.content}</div>
+                        <div className="message-timestamp mine-timestamp">
+                          {formatTime(msg?.createdAt)}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="message-wrapper">
+                        <div className="message-username">
+                          {msg?.member?.name}
+                        </div>
+                        <div className="message-content">{msg?.content}</div>
+                        <div className="message-timestamp other-timestamp">
+                          {formatTime(msg?.createdAt)}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  // 상대꺼
-                  <div className="message-wrapper">
-                    <div className="message-username">{msg.member.name}</div>
-                    <div className="message-content">{msg.content}</div>
-                    <div className="message-timestamp other-timestamp">
-                      {formatTime(msg.createdAt)}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
+                ))}
           </div>
 
           <div className="chat-input-container">
