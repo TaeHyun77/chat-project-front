@@ -1,13 +1,16 @@
 import React, { useEffect, useState, useContext } from "react";
-import * as req from "../api/req";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../state/LoginState";
+import { FuncModule } from "../state/FuncList";
+import * as req from "../api/req";
+
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
-import "./ChatRooms.css";
+
 import Skeleton from "react-loading-skeleton";
-import { FuncModule } from "../state/FuncList";
 import { TbMessage2Minus } from "react-icons/tb";
+
+import "./ChatRooms.css";
 
 const ChatRooms = () => {
   const { userInfo, isLogin } = useContext(LoginContext);
