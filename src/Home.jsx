@@ -43,7 +43,7 @@ const Home = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedDateList, setSelectedDateList] = useState(filteredToday);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // skeleton UI를 위함
 
   const getDepartureData = async () => {
     try {

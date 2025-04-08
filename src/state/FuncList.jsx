@@ -65,12 +65,19 @@ const FuncList = ({ children }) => {
 
   const formatTime = (timestamp) => {
     if (!timestamp) return "";
+  
     const date = new Date(timestamp);
-    return date.toLocaleTimeString("ko-KR", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    date.setHours(date.getHours() + 9); // UTC → KST 변환
+  
+    const yy = String(date.getFullYear()).slice(2); // 2자리 연도 (25)
+    const mm = String(date.getMonth() + 1).padStart(2, "0"); // 월 (04)
+    const dd = String(date.getDate()).padStart(2, "0"); // 일 (02)
+    const hh = String(date.getHours()).padStart(2, "0"); // 시간 (01)
+    const min = String(date.getMinutes()).padStart(2, "0"); // 분 (12)
+  
+    return `${yy}-${mm}-${dd} ${hh}:${min}`;
   };
+  
 
   // 
   const calculateDelay = (schedule, estimated) => {
