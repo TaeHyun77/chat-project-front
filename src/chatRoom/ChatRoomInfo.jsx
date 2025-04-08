@@ -14,8 +14,8 @@ import { IoIosArrowBack } from "react-icons/io";
 
 import "./ChatRoomInfo.css";
 
-const SOCKET_URL = "https://incheon-airport-info.site/ws"; // Ec2
-//const SOCKET_URL = "http://localhost:8080/ws"; // 로컬
+//const SOCKET_URL = "https://incheon-airport-info.site/ws"; // Ec2
+const SOCKET_URL = "http://localhost:8080/ws"; // 로컬
 
 const ChatRoomInfo = () => {
   const { userInfo } = useContext(LoginContext);
@@ -39,10 +39,8 @@ const ChatRoomInfo = () => {
     try {
       const response = await req.chatRoomInfo(roomId);
 
-      const { chatRoomName, creator, member, chats, createdAt, modifiedAt } =
-        response.data;
+      const { chatRoomName, creator, member, chats, createdAt, modifiedAt } = response.data;
 
-      console.log("asdadad" + chats);
       setRoomInfo({
         chatRoomName,
         creator,
@@ -59,10 +57,13 @@ const ChatRoomInfo = () => {
   };
 
   const deleteRoom = async (roomId) => {
-    if (userInfo?.username != roomInfo?.creator) {
+    console.log(userInfo?.username + ", " + roomInfo?.member?.username)
+
+    if (userInfo?.username != roomInfo?.member?.username) {
       alert("방 생성자가 아닙니다.");
       return;
     }
+
 
     const check = window.confirm("채팅방을 삭제 하시겠습니까? ?");
 

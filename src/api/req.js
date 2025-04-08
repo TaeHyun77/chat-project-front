@@ -4,6 +4,9 @@ import api from './api';
 // 로그인 유저 정보
 export const info = () => api.get("/api/info");
 
+// 회원의 채팅방 정보
+export const getMemberChatRooms = (id) => api.get(`/api/member/${id}/chatRooms`);
+
 // 출국장 데이터
 export const departures = () => axios.get("/api/get/departures", { withCredentials: false });
 

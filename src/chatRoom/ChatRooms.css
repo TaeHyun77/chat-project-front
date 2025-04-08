@@ -65,6 +65,18 @@
 .chatrooms-list {
   list-style: none;
   padding: 0;
+  max-height: 650px;         
+  overflow-y: auto;          
+  scrollbar-width: thin; 
+}
+
+.chatrooms-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatrooms-list::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
 }
 
 .chatrooms-list li {
@@ -72,6 +84,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+  margin-right: 10px;
   border-bottom: 1px solid #ccc;
 }
 
