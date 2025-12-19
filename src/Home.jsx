@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import * as req from "./api/req";
 import { useNavigate } from "react-router-dom";
@@ -200,6 +201,7 @@ const Home = () => {
                 className={
                   selectedDate === getTomorrowDate().substring(4) ? "active" : ""
                 }
+
                 onClick={() => {
                   setSelectedDate(getTomorrowDate().substring(4));
                   setSelectedDateList(filteredNext);
@@ -229,6 +231,7 @@ const Home = () => {
 
           </div>
           <ResponsiveContainer width="100%" height={470}>
+
             <LineChart
               data={selectedDateList}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -276,6 +279,7 @@ const Home = () => {
               {formatDateTime2(d.substring(4))}
             </button>
           ))}
+
         </div>
 
         <div className="searchContainer">
@@ -322,8 +326,7 @@ const Home = () => {
 
           {isFetching && <Skeleton count={3} height={40} />}
         </div>
-
-      </div>
+      </div >
       <Footer />
     </>
   );

@@ -42,7 +42,6 @@ const EditMember = () => {
 
     try {
       const response = await req.isNickName(editNickName);
-
       setIsNickNameAvailable(response.data ? "unavailable" : "available");
     } catch (error) {
       console.error("중복 체크 중 오류 발생:", error);
@@ -51,7 +50,6 @@ const EditMember = () => {
   };
 
   const getEditNickName = async (id, editNickName) => {
-    
     if (isNickNameAvailable != "available") {
       alert("중복 확인을 해주세요 !");
       return;
