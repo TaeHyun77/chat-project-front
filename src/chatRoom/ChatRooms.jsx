@@ -33,18 +33,12 @@ const ChatRooms = () => {
     setIsLoading(false);
   };
 
-<<<<<<< HEAD
   // 채팅창 생성
   const createRoom = async () => {
     if (!window.confirm("채팅방을 생성하시겠습니까?")) return;
     if (!isLogin) {
       return alert("로그인이 필요합니다!"), setNewRoomName("");
     }
-=======
-  const createRoom = async () => {
-    if (!window.confirm("채팅방을 생성하시겠습니까?")) return;
-    if (!isLogin) return alert("로그인이 필요합니다!"), setNewRoomName("");
->>>>>>> 4e34a2167360762f862a0d61bff35ea23c1d24da
 
     const trimmedName = newRoomName.trim();
     if (!trimmedName) {
@@ -60,27 +54,21 @@ const ChatRooms = () => {
     try {
       const response = await req.createChatRoom(chatRoomInfo);
 
-<<<<<<< HEAD
       setRooms((prev) => [...prev, response.data]);
       setNewRoomName("");
 
       await getChatRooms(); 
-=======
-      setRooms((prev) => [...prev, response.data]); // 상태 업데이트
-      setNewRoomName("");
-
-      await getChatRooms(); // 방을 다시 불러와 최신 상태 유지
->>>>>>> 4e34a2167360762f862a0d61bff35ea23c1d24da
     } catch (error) {
       console.error("채팅방 생성 오류:", error);
     }
   };
 
-  const enterRoom = (roomId) => {
+  const enterRoom = (chatroomId) => {
     if (!window.confirm("채팅에 참여하시겠습니까?")) return;
     if (!isLogin) return alert("로그인이 필요합니다!");
 
-    navigate(`/room/${roomId}`);
+    console.log(chatroomId)
+    navigate(`/room/${chatroomId}`);
   };
 
   useEffect(() => {
