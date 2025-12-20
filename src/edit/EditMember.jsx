@@ -11,23 +11,22 @@ import { TbMessage2Minus } from "react-icons/tb";
 import "./EditMember.css";
 
 const EditMember = () => {
+  const navigate = useNavigate();
   const { userInfo } = useContext(LoginContext);
   const { formatDateTime3 } = useContext(FuncModule);
+
   const [userId, setUserId] = useState(userInfo?.id);
   const [memberChatRooms, setMemberChatRooms] = useState([]);
   const [editNickName, setEditNickName] = useState(userInfo?.nickName);
   const [isNickNameAvailable, setIsNickNameAvailable] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log("Is : " + isNickNameAvailable);
-
-  const navigate = useNavigate();
-
   const getMemberChatRooms = async (userId) => {
     try {
       const response = await req.getMemberChatRooms(userId);
 
-      setMemberChatRooms(response.data.chatRoomMemberDtos);
+      setMemberChatRooms(response.data);
+      console.log(memberChatRooms)
     } catch (error) {
       console.error("회원의 채팅방 정보를 가져오는 중 에러 발생:", error);
     }
@@ -160,43 +159,45 @@ const EditMember = () => {
           </button>
         </div>
         <div className="member_chatRoom">
-          <h3>{userInfo?.name}님의 채팅방</h3>
+          <h3>생성한 채팅방</h3>
           <div className="room-list">
             <ul className="member-chatrooms-list">
-              {isLoading // 로딩 중이면 Skeleton UI 표시
-                ? [...Array(5)].map((_, index) => (
+              {isLoading ? (
+                [...Array(5)].map((_, index) => (
                   <li key={index} className="chatroom-item">
                     <Skeleton height={40} width={400} />
                   </li>
                 ))
-                : memberChatRooms.map(
-                  (
-                    memberChatRooms,
-                    index // 데이터가 로드되면 정상 목록 표시
-                  ) => (
-                    <li
-                      className="chatroom-item"
-                      onClick={() => enterRoom(memberChatRooms?.chatRoomId)}
-                    >
-                      <div className="chatroom-content">
-                        <div className="chatroom-header">
-                          <TbMessage2Minus />
-                          <span className="chatroom-title">
-                            {memberChatRooms?.chatRoomName}
-                          </span>
-                        </div>
-
-                        <div className="chatroom-meta">
-                          <span>
-                            {memberChatRooms?.member?.name} -{" "}
-                            {formatDateTime3(memberChatRooms.createdAt)}
-                          </span>
-                        </div>
+              ) : memberChatRooms.length === 0 ? (
+                <p className="chatroom-empty">
+                  생성한 채팅방이 없습니다.
+                </p>
+              ) : (
+                memberChatRooms.map((room) => (
+                  <li
+                    key={room.chatRoomId}
+                    className="chatroom-item"
+                    onClick={() => enterRoom(room.chatRoomId)}
+                  >
+                    <div className="chatroom-content">
+                      <div className="chatroom-header">
+                        <TbMessage2Minus />
+                        <span className="chatroom-title">
+                          {room.chatRoomName}
+                        </span>
                       </div>
-                    </li>
-                  )
-                )}
+
+                      <div className="chatroom-meta">
+                        <span>
+                          {room.member?.name} - {formatDateTime3(room.createdAt)}
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                ))
+              )}
             </ul>
+
           </div>
         </div>
       </label>

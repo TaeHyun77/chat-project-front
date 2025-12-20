@@ -11,7 +11,7 @@
 @media (max-width: 600px) {
   .edit_label {
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
   }
 
   .edit_container,
@@ -100,7 +100,7 @@ input:disabled {
   width: 600px;
   height: 560px;
   margin: 70px 10px;
-  margin-bottom: 30px;  
+  margin-bottom: 30px;
   padding: 20px;
   background: white;
   border-radius: 10px;
@@ -110,9 +110,9 @@ input:disabled {
 .member-chatrooms-list {
   list-style: none;
   padding: 0;
-  max-height: 400px;         
-  overflow-y: auto;          
-  scrollbar-width: thin;    
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .member-chatrooms-list::-webkit-scrollbar {
@@ -131,4 +131,13 @@ input:disabled {
   padding: 10px;
   margin-right: 10px;
   border-bottom: 1px solid #ccc;
+}
+
+.chatroom-empty {
+  list-style: none;
+  padding: 20px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+  border: none;
 }

@@ -1,111 +1,29 @@
 @font-face {
   font-family: "Ownglyph_ParkDaHyun";
-<<<<<<< HEAD
   src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2") format("woff2");
-=======
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2")
-    format("woff2");
->>>>>>> 4e34a2167360762f862a0d61bff35ea23c1d24da
   font-weight: normal;
   font-style: normal;
 }
 
 .container {
   margin: 20px auto;
-<<<<<<< HEAD
   width: 60%;
   padding: 20px;
   background-color: white;
   border-radius: 20px;
   font-family: Arial, sans-serif;
-=======
-  font-family: Arial, sans-serif;
-  background-color: white;
-  border-radius: 20px;
-  width: 60%;
-  padding: 20px;
->>>>>>> 4e34a2167360762f862a0d61bff35ea23c1d24da
 }
 
 .container span {
   font-size: 18px;
 }
 
-<<<<<<< HEAD
-=======
-.chart-section {
-  display: flex;
-}
-
-.date-buttons {
-  display: flex;
-}
-
-.date-buttons button {
-  background-color: rgb(21, 205, 222);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  width: 100%;
-  height: 50px;
-  margin: 3px;
-  margin-bottom: 20px;
-  font-size: 20px;
-  font-family: "Ownglyph_ParkDaHyun";
-}
-
-.place-buttons button {
-  width: 100%;
-  height: 38px;
-  margin: 3px;
-  background-color: rgb(21, 205, 222);
-  color: white;
-  font-family: "Ownglyph_ParkDaHyun";
-  font-size: 20px;
-  border: none;
-  border-radius: 10px;
-}
-
-.place-buttons button:hover {
-  scale: 1.02;
-}
-
-.chart-filters {
-  margin-top: 10px;
-  width: 30%;
-}
-
-.map {
-  width: 600px;
-  height: 400px;
-}
-
-.mapImg {
-  border: 1px ;
-  margin-right: 20px;
-  padding: 20px;
-}
-
-.mapInfo {
-  font-family: "Ownglyph_ParkDaHyun";
-  font-size: 15px;
-  margin-left: 20px;
-  padding: 20px;
-}
-
-.goChat {
-  font-family: "Ownglyph_ParkDaHyun";
-  font-size: 20px;
-}
-
->>>>>>> 4e34a2167360762f862a0d61bff35ea23c1d24da
 h2 {
   text-align: center;
   margin-bottom: 15px;
   color: #333;
 }
 
-<<<<<<< HEAD
 .goChat {
   font-family: "Ownglyph_ParkDaHyun";
   font-size: 20px;
@@ -291,49 +209,6 @@ h2 {
     display: flex;
     gap: 15px;
     padding: 6px 0;
-=======
-.chatBtn {
-  width: 90px;
-  height: 40px;
-  border-radius: 10px;
-  border: none;
-  margin-left: 20px;
-  background-color: rgb(21, 205, 222);
-  color: white;
-}
-
-.table-container {
-  max-height: 600px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 10px;
-}
-
-.data-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 2fr; /* 마지막 칸(시간)을 2배로 확대 */
-  padding: 15px;
-  border-bottom: 1.2px solid green;
-  text-align: center;
-  align-items: center;
-}
-
-@media (max-width: 1800px) {
-  .data-row {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* 왼쪽 정렬 */
-    padding: 10px;
-  }
-
-  /* 항목을 리스트 형식으로 변경 */
-  .data-row div {
-    display: flex;
-    width: 100%;
-    gap: 15px;
-    padding: 5px 0;
->>>>>>> 4e34a2167360762f862a0d61bff35ea23c1d24da
     border-bottom: 1px solid #ddd;
   }
 
@@ -341,7 +216,6 @@ h2 {
     border-bottom: none;
   }
 
-<<<<<<< HEAD
   .data-row div {
     display: flex;
     align-items: flex-start;
@@ -355,8 +229,8 @@ h2 {
     min-width: 70px;
     color: #555;
     text-align: left;
-=======
-  /* 헤더 숨기기 */
+
+    /* 헤더 숨기기 */
   .data-row.header {
     display: none;
   }
@@ -448,6 +322,5 @@ h2 {
   .map {
     width: 400px;
     height: 300px;
->>>>>>> 4e34a2167360762f862a0d61bff35ea23c1d24da
   }
-}
+}}

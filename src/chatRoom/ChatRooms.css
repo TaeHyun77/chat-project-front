@@ -1,7 +1,7 @@
 /* 전체 레이아웃 */
 .chatrooms-container {
   width: 60%;
-  height: 900px;
+  height: 1100px;
   margin: 20px auto;
   font-family: Arial, sans-serif;
   background-color: white;
@@ -12,7 +12,7 @@
 .chatrooms-title {
   font-size: 22px;
   font-weight: bold;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
 }
 
 .chatrooms-input-container {
