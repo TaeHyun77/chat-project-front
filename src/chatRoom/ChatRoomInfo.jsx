@@ -147,7 +147,7 @@ const ChatRoomInfo = () => {
         });
 
         // 인원 수 요청
-        stompClient.publish({ destination: `/app/chatroom/userCnt` });
+        stompClient.publish({ destination: `/app/chatroom/{roomId}/userCnt` });
         stompClient.publish({ destination: "/app/chat/userCnt" });
 
         // 5. 입장 메시지 (세션 기준, 새로고침 시 중복 방지)
@@ -315,8 +315,6 @@ const ChatRoomInfo = () => {
     );
 }, [chatInfo]);
 
-
-
 return (
   <>
     <Header />
@@ -378,7 +376,7 @@ return (
               >
                 {msg?.chatType === "ENTER" || msg?.chatType === "EXIT" ? (
                   <div className="enter-message-content">
-                    {msg?.content.split(":")[0]}님이{" "}
+                    {msg?.memberResDto.nickName}님이{" "}
                     {msg?.chatType === "ENTER" ? "입장하였습니다." : "퇴장하였습니다."}
                   </div>
                 ) : msg?.memberResDto?.username === userInfo?.username ? (

@@ -79,7 +79,6 @@ const FuncList = ({ children }) => {
   };
   
 
-  // 
   const calculateDelay = (schedule, estimated) => {
     const scheduleDate = new Date(
       `${schedule.substring(0, 4)}-${schedule.substring(
