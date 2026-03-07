@@ -1,73 +1,113 @@
 /* 전체 레이아웃 */
 .chatrooms-container {
+  box-sizing: border-box;
   width: 60%;
-  height: 1100px;
   margin: 20px auto;
   font-family: Arial, sans-serif;
-  background-color: white;
-  border-radius: 20px;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-/* 제목 */
+
 .chatrooms-title {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: bold;
-  margin-bottom: 50px;
+  margin: 0 0 16px 0;
+  color: #333;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.chatrooms-title::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 3px;
+  background-color: #78bbdf;
+  border-radius: 2px;
+  margin-top: 8px;
+}
+
+/* 섹션 공통 */
+.section-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+/* 생성 영역 */
+.chatrooms-create-section {
+  background-color: white;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .chatrooms-input-container {
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
-}
-
-.room-list {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.chatIcon {
-  font-size: 15px;
 }
 
 .chatrooms-input {
-  padding: 10px;
-  width: 300px;
-  height: 20px;
-  border: 1px solid #ccc;
+  width: 260px;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
   border-radius: 10px;
   font-size: 14px;
-  margin-bottom: 10px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chatrooms-input:focus {
+  border-color: #78bbdf;
 }
 
 .chatrooms-button {
-  height: 40px;
-  padding: 10px 15px;
-  background-color: rgb(21, 205, 222);
+  padding: 10px 24px;
+  background-color: #78bbdf;
   color: white;
   border: none;
   border-radius: 10px;
   cursor: pointer;
   font-size: 14px;
-  margin-bottom: 10px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
 .chatrooms-button:hover {
-  transform: scale(1.02);
+  background-color: #5aa3cd;
 }
 
-/* 채팅방 목록 */
+/* 목록 영역 */
+.chatrooms-list-section {
+  background-color: white;
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 60vh;
+}
+
+.room-list {
+  margin: 0;
+}
+
 .chatrooms-list {
   list-style: none;
   padding: 0;
-  max-height: 650px;         
-  overflow-y: auto;          
-  scrollbar-width: thin; 
+  margin: 0;
+  max-height: 600px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .chatrooms-list::-webkit-scrollbar {
@@ -79,45 +119,48 @@
   border-radius: 3px;
 }
 
-.chatrooms-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  margin-right: 10px;
-  border-bottom: 1px solid #ccc;
-}
-
 .chatroom-item {
   display: flex;
   align-items: center;
-  padding: 12px;
-  width: 420px;
-  background: white;
-  border: 1px solid rgb(228, 219, 219);
+  padding: 14px 16px;
+  background: #f8f9fa;
+  border: 1px solid #eee;
   border-radius: 10px;
-  margin-bottom: 20px;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease;
 }
 
 .chatroom-item:hover {
-  transform: scale(1.01);
+  background-color: #e8f4fb;
+  border-color: #78bbdf;
 }
 
 .chatroom-content {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
 }
 
 .chatroom-header {
   display: flex;
   align-items: center;
-  gap: 5px; 
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
 }
 
 .chatroom-meta {
-  font-size: 13px;
-  color: gray;
-  margin-top: 3px; 
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+  margin-left: 24px;
+}
+
+.chatrooms-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  color: #999;
+  font-size: 14px;
 }

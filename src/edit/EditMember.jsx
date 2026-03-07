@@ -90,7 +90,7 @@ const EditMember = () => {
   }, [userInfo]);
 
   return (
-    <>
+    <div className="edit-page">
       <Header />
       <label className="edit_label">
         <div className="edit_container">
@@ -202,7 +202,7 @@ const EditMember = () => {
         </div>
       </label>
       <Footer />
-    </>
+    </div>
   );
 };
 
