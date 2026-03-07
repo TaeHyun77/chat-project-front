@@ -316,7 +316,7 @@ const ChatRoomInfo = () => {
 }, [chatInfo]);
 
 return (
-  <>
+  <div className="chatroom-page">
     <Header />
     <div className="chat-container">
       <div className="chat-box">
@@ -346,11 +346,11 @@ return (
         </div>
         <div className="chat-header">
           <div className="icon">
-            <div className="left-section" onClick={handleExit}>
-              <IoIosArrowBack />
+            <span className="left-section">접속자: {userCount}명</span>
+            <div className="right-section" onClick={handleExit}>
               <span>나가기</span>
+              <IoIosArrowBack style={{ transform: "rotate(180deg)" }} />
             </div>
-            <span className="right-section">접속자: {userCount}명</span>
           </div>
         </div>
 
@@ -424,7 +424,7 @@ return (
       </div>
     </div>
     <Footer />
-  </>
+  </div>
 );
 };
 

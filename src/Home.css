@@ -6,6 +6,7 @@
 }
 
 .container {
+  box-sizing: border-box;
   margin: 20px auto;
   width: 60%;
   padding: 20px;
@@ -22,6 +23,19 @@ h2 {
   text-align: center;
   margin-bottom: 15px;
   color: #333;
+  font-size: 18px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+h2::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 3px;
+  background-color: #78bbdf;
+  border-radius: 2px;
+  margin: 8px auto 0;
 }
 
 .goChat {
@@ -29,38 +43,50 @@ h2 {
   font-size: 20px;
 }
 
-.chatBtn {
-  width: 90px;
-  height: 40px;
-  margin-left: 20px;
-  border-radius: 10px;
-  border: none;
-  background-color: #78bbdf;
-  color: white;
-  cursor: pointer;
-}
 
 .chart-section {
   display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .chart-filters {
-  width: 30%;
-  margin-top: 10px;
+  display: flex;
+  gap: 24px;
+  padding: 16px 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  align-items: flex-start;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-group:last-child {
+  flex: 1;
+}
+
+.filter-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
 }
 
 .date-buttons {
   display: flex;
-  margin-bottom: 20px;
+  gap: 6px;
 }
 
 .date-buttons button {
-  margin: 5px;
-  padding: 10px 18px;
-  font-size: 16px;
-  border-radius: 10px;
-  border: none;
-  background-color: #e0e0e0;
+  padding: 8px 40px;
+  white-space: nowrap;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background-color: white;
   color: #333;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -68,69 +94,140 @@ h2 {
 }
 
 .date-buttons button:hover {
-  background-color: #bcdff5;
+  background-color: #e8f4fb;
+  border-color: #78bbdf;
 }
 
 .date-buttons button.active {
   background-color: #78bbdf;
   color: white;
+  border-color: #78bbdf;
   font-weight: bold;
-  box-shadow: 0 0 8px rgba(120, 187, 223, 0.6);
-  transform: scale(1.05);
+}
+
+.place-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
 }
 
 .place-buttons button {
-  width: 100%;
-  height: 38px;
-  margin: 3px;
-  border-radius: 10px;
-  border: none;
-  background-color: #e0e0e0;
-  font-size: 18px;
+  padding: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background-color: white;
+  font-size: 14px;
   font-family: "Ownglyph_ParkDaHyun";
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .place-buttons button:hover {
-  transform: scale(1.02);
+  background-color: #e8f4fb;
+  border-color: #78bbdf;
 }
 
 .place-buttons button.active {
   background-color: #78bbdf;
   color: white;
+  border-color: #78bbdf;
+}
+
+.chart-area {
+  padding: 10px 0;
 }
 
 .departure-info {
   margin-bottom: 30px;
-  padding-left: 10px;
-  border-left: 3px solid red;
-  font-size: 15px;
+  padding: 16px 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  font-size: 14px;
 }
 
-.departure-info p {
-  margin: 10px 0;
+.info-notice {
+  margin-bottom: 14px;
+  color: #4a7cbb;
+  font-weight: 500;
 }
 
-.searchContainer {
+.info-notice p {
+  margin: 4px 0;
+}
+
+.info-levels {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.info-levels .level {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+}
+
+.level.smooth {
+  background-color: #4caf50;
+}
+
+.level.normal {
+  background-color: #8bc34a;
+}
+
+.level.slight {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.level.busy {
+  background-color: #ff9800;
+}
+
+.level.very-busy {
+  background-color: #f44336;
+}
+
+.plane-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .searchContainer input {
   width: 180px;
-  height: 30px;
-  padding: 5px;
+  height: 36px;
+  padding: 0 12px;
   border-radius: 10px;
-  border: 1px solid gray;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.searchContainer input:focus {
+  border-color: #78bbdf;
 }
 
 .table-container {
-  max-height: 500px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  max-height: 520px;
+  padding: 0;
+  border: 1px solid #eee;
+  border-radius: 12px;
   overflow-y: auto;
+  background-color: #fafafa;
+}
+
+.table-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #999;
+  font-size: 14px;
 }
 
 .table-header,
@@ -139,60 +236,80 @@ h2 {
   grid-template-columns: 1.2fr 1.2fr 0.8fr 0.8fr 1fr 1fr 1.5fr;
   align-items: center;
   text-align: center;
+  padding: 0 16px;
 }
 
 .table-header {
-  font-weight: bold;
-  background-color: #f5f5f5;
-  padding: 10px 0;
-  border-bottom: 2px solid #ddd;
+  font-weight: 600;
+  font-size: 13px;
+  color: #666;
+  background-color: #f0f4f8;
+  padding: 12px 16px;
+  border-bottom: none;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .data-row {
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #333;
+  background-color: white;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.15s;
+}
+
+.data-row:hover {
+  background-color: #f4faff;
+}
+
+.data-row:last-child {
+  border-bottom: none;
 }
 
 .plane-time {
-  padding-left: 20px;
+  padding-left: 12px;
   text-align: left;
 }
 
 .plane-time p {
-  margin: 0 0 6px 0;
+  margin: 0 0 3px 0;
+  font-size: 12px;
 }
 
 .real-time {
-  color: blue;
+  color: #4a7cbb;
 }
 
 .update-time {
-  color: red;
+  color: #e06060;
+}
+
+.delay-time {
+  color: #ff9800;
+  font-weight: 600;
+  font-size: 12px;
 }
 
 .table-container::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .table-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
+  background: transparent;
 }
 
 .table-container::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
+  background: #ccc;
+  border-radius: 3px;
 }
 
 .table-container::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #aaa;
 }
 
 @media (max-width: 1800px) {
-  .container {
-    width: 95%;
-  }
-
   .table-header {
     display: none;
   }
@@ -241,67 +358,6 @@ h2 {
   }
 }
 
-.data-row.header {
-  background-color: #acb9c888;
-  color: black;
-  border-radius: 10px;
-}
-
-.searchContainer {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.departure-info {
-  border-left: 3px solid red;
-  padding-left: 10px;
-  font-size: 15px;
-}
-
-.departure-info p {
-  margin: 10px 0;
-}
-
-.searchContainer input {
-  width: 150px;
-  height: 30px;
-  border-radius: 10px;
-  border: 1px solid gray;
-  padding: 5px;
-  margin-bottom: 10px;
-}
-
-.plane-time p {
-  display: flex;
-  margin: 0;
-}
-
-.plane-time {
-  padding-left: 20px;
-}
-
-/* 스크롤바 전체 영역 */
-.table-container::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-/* 스크롤바 트랙 (배경) */
-.table-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-/* 스크롤바 핸들 (움직이는 부분) */
-.table-container::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
-}
-
-/* 스크롤바 핸들에 마우스 오버 시 */
-.table-container::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
 
 @media (max-width: 1800px) {
   .container {

@@ -5,9 +5,15 @@ const Footer = () => {
   return (
     <footer>
       <div className="footerContainer">
-        <span style={{marginBottom:"10px"}}>Developed by Park TaeHyun</span>
-        <span>Backend : https://github.com/TaeHyun77/chat-project.git</span>
-        <span>Frontend : https://github.com/TaeHyun77/chat-project-front.git</span>
+        <span className="footer-author">Developed by Park TaeHyun</span>
+        <div className="footer-links">
+          <a href="https://github.com/TaeHyun77/chat-project" target="_blank" rel="noopener noreferrer">
+            Backend GitHub
+          </a>
+          <a href="https://github.com/TaeHyun77/chat-project-front" target="_blank" rel="noopener noreferrer">
+            Frontend GitHub
+          </a>
+        </div>
       </div>
     </footer>
   );

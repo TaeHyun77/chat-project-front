@@ -78,34 +78,38 @@ const ChatRooms = () => {
     <>
       <Header />
       <div className="chatrooms-container">
-        <h2 className="chatrooms-title">실시간 오픈 채팅방</h2>
-        <div className="chatrooms-input-container">
-          <input
-            type="text"
-            className="chatrooms-input"
-            value={newRoomName}
-            onChange={(e) => setNewRoomName(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && createRoom()}
-            placeholder="채팅방 이름 입력"
-          />
-          <button className="chatrooms-button" onClick={createRoom}>
-            채팅방 생성
-          </button>
+        <div className="chatrooms-create-section">
+          <h2 className="chatrooms-title">실시간 오픈 채팅방</h2>
+          <div className="chatrooms-input-container">
+            <input
+              type="text"
+              className="chatrooms-input"
+              value={newRoomName}
+              onChange={(e) => setNewRoomName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && createRoom()}
+              placeholder="채팅방 이름을 입력하세요"
+            />
+            <button className="chatrooms-button" onClick={createRoom}>
+              생성
+            </button>
+          </div>
         </div>
-        <div className="room-list">
-          <ul className="chatrooms-list">
-            {isLoading // 로딩 중이면 Skeleton UI 표시
-              ? [...Array(5)].map((_, index) => (
-                  <li key={index} className="chatroom-item">
-                    <Skeleton height={40} width={400} />
-                  </li>
-                ))
-              : rooms.map(
-                  (
-                    room,
-                    index // 데이터가 로드되면 정상 목록 표시
-                  ) => (
+
+        <div className="chatrooms-list-section">
+          <span className="section-label">채팅방 목록</span>
+          <div className="room-list">
+            <ul className="chatrooms-list">
+              {isLoading
+                ? [...Array(5)].map((_, index) => (
+                    <li key={index} className="chatroom-item">
+                      <Skeleton height={40} />
+                    </li>
+                  ))
+                : rooms.length === 0
+                ? <div className="chatrooms-empty">개설된 채팅방이 없습니다.</div>
+                : rooms.map((room) => (
                     <li
+                      key={room?.chatRoomId}
                       className="chatroom-item"
                       onClick={() => enterRoom(room?.chatRoomId)}
                     >
@@ -116,7 +120,6 @@ const ChatRooms = () => {
                             {room?.chatRoomName}
                           </span>
                         </div>
-
                         <div className="chatroom-meta">
                           <span>
                             {room?.member?.name} -{" "}
@@ -125,9 +128,9 @@ const ChatRooms = () => {
                         </div>
                       </div>
                     </li>
-                  )
-                )}
-          </ul>
+                  ))}
+            </ul>
+          </div>
         </div>
       </div>
       <Footer />

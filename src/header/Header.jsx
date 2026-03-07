@@ -1,12 +1,11 @@
-import React, { useContext, useEffect } from "react";
-import * as req from '../api/req';
-import { useNavigate } from "react-router-dom";
-import "./Header.css";
-import { LoginContext } from "../state/LoginState";
-import api from "../api/api";
 import Cookies from "js-cookie";
-import "./Header.css";
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api/api";
+import * as req from '../api/req';
 import inLogo from "../img/Incheon.png";
+import { LoginContext } from "../state/LoginState";
+import "./Header.css";
 
 const Header = () => {
   const { isLogin, setIsLogin, userInfo, setUserInfo, logincheck } =
@@ -74,12 +73,18 @@ const Header = () => {
       </div>
       {!isLogin ? (
         <div className="logContainer">
+          <button onClick={() => navigate("/chatrooms")} className="chatBtn">
+            오픈 채팅방
+          </button>
           <button onClick={onGoogleLogin} className="loginButton">
             Google 로그인
           </button>
         </div>
       ) : (
         <div className="logContainer">
+          <button onClick={() => navigate("/chatrooms")} className="chatBtn">
+            오픈 채팅방
+          </button>
           <p className="loginName">환영해요 {userInfo?.name} 님 !</p>
           <p className="edit_member" onClick={handleEdit}>회원 정보 수정</p>
           <button onClick={googleLogout} className="logoutButton">

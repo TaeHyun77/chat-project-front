@@ -7,14 +7,40 @@
   }
 
   .footerContainer {
-    width: 100%;
-    height: 120px;
+    box-sizing: border-box;
+    width: 60%;
+    padding: 20px;
+    margin: 20px auto;
     background-color: white;
+    border-radius: 20px;
     font-family: "Ownglyph_ParkDaHyun";
-    font-size: 18px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
+    gap: 10px;
+}
+
+.footer-author {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
+
+.footer-links {
+    display: flex;
+    gap: 16px;
+}
+
+.footer-links a {
+    font-size: 14px;
+    color: #78bbdf;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }

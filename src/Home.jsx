@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useContext, useCallback } from "react";
-import * as req from "./api/req";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
+import { Bar, BarChart, CartesianGrid, Cell, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import * as req from "./api/req";
+import Footer from "./footer/Footer";
+import Header from "./header/Header";
+import "./Home.css";
 import { FuncModule } from "./state/FuncList";
 import { LoginContext } from "./state/LoginState";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import Header from "./header/Header";
-import Footer from "./footer/Footer";
-import Skeleton from "react-loading-skeleton";
-import "./Home.css";
-import "react-loading-skeleton/dist/skeleton.css";
 
 const PAGE_SIZE = 20;
 
@@ -132,6 +132,14 @@ const Home = () => {
     );
   };
 
+  const getBarColor = (value) => {
+    if (value < 7000) return "#4caf50";
+    if (value <= 7600) return "#8bc34a";
+    if (value <= 8200) return "#ffc107";
+    if (value <= 8600) return "#ff9800";
+    return "#f44336";
+  };
+
   const filteredPlanes = (planes ?? []).filter((p) =>
     p.flightId?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -155,135 +163,181 @@ const Home = () => {
   return (
     <>
       <Header />
-      <div
-        className="container"
-        style={{ display: "flex", alignItems: "center" }}
-      >
-        <p className="goChat">로그인 하여 여러 사용자들과 소통해보세요 !</p>
-        <button className="chatBtn" onClick={handleChatPage}>
-          채팅방 이동
-        </button>
-      </div>
       <div className="container">
         <h2>
           출국장 예상 혼잡도 <span>( {formatDateTime2(selectedDate)} )</span>
         </h2>
         <div className="departure-info">
-          <p style={{ color: "blue" }}>
-            오늘로부터 이틀 간의 데이터를 제공합니다
-          </p>
-          <p style={{ color: "blue" }}>
-            날짜를 먼저 선택 후 출국장을 선택 해주세요
-          </p>
-          <p style={{ color: "red" }}>7000명 미만 : 원활</p>
-          <p style={{ color: "red" }}>7001명 ~ 7600명: 보통</p>
-          <p style={{ color: "red" }}>7601명 ~ 8200명 : 약간 혼잡</p>
-          <p style={{ color: "red" }}>8201명 ~ 8600명 : 혼잡</p>
-          <p style={{ color: "red" }}>8601명 이상 : 매우 혼잡</p>
+          <div className="info-notice">
+            <p>오늘로부터 이틀 간의 데이터를 제공합니다</p>
+            <p>날짜를 먼저 선택 후 출국장을 선택 해주세요</p>
+          </div>
+          <div className="info-levels">
+            <span className="level smooth">원활 (7,000명 미만)</span>
+            <span className="level normal">보통 (7,001 ~ 7,600명)</span>
+            <span className="level slight">약간 혼잡 (7,601 ~ 8,200명)</span>
+            <span className="level busy">혼잡 (8,201 ~ 8,600명)</span>
+            <span className="level very-busy">매우 혼잡 (8,601명 이상)</span>
+          </div>
         </div>
         <div className="chart-section">
           <div className="chart-filters">
-            <div className="date-buttons">
-              <button
-                className={
-                  selectedDate === getFormattedDate().substring(4) ? "active" : ""
-                }
-                onClick={() => {
-                  setSelectedDate(getFormattedDate().substring(4));
-                  setSelectedDateList(filteredToday);
-                }}
-              >
-                {formatDateTime2(getFormattedDate().substring(4))}
-              </button>
-
-              <button
-                className={
-                  selectedDate === getTomorrowDate().substring(4) ? "active" : ""
-                }
-                onClick={() => {
-                  setSelectedDate(getTomorrowDate().substring(4));
-                  setSelectedDateList(filteredNext);
-                }}
-              >
-                {formatDateTime2(getTomorrowDate().substring(4))}
-              </button>
+            <div className="filter-group">
+              <span className="filter-label">날짜</span>
+              <div className="date-buttons">
+                <button
+                  className={
+                    selectedDate === getFormattedDate().substring(4) ? "active" : ""
+                  }
+                  onClick={() => {
+                    setSelectedDate(getFormattedDate().substring(4));
+                    setSelectedDateList(filteredToday);
+                  }}
+                >
+                  {formatDateTime2(getFormattedDate().substring(4))}
+                </button>
+                <button
+                  className={
+                    selectedDate === getTomorrowDate().substring(4) ? "active" : ""
+                  }
+                  onClick={() => {
+                    setSelectedDate(getTomorrowDate().substring(4));
+                    setSelectedDateList(filteredNext);
+                  }}
+                >
+                  {formatDateTime2(getTomorrowDate().substring(4))}
+                </button>
+              </div>
             </div>
-
-            <div className="place-buttons">
-              {lineOptions.map((option) => {
-                const isSelected = selectedLines.includes(option.key);
-
-                return (
-                  <div key={option.key}>
-                    <button
-                      type="button"
-                      className={isSelected ? "active" : ""}
-                      onClick={() => toggleSelection(option.key)}
-                    >
-                      {option.label}
-                    </button>
-                  </div>
-                );
-              })}
+            <div className="filter-group">
+              <span className="filter-label">출국장</span>
+              <div className="place-buttons">
+                {lineOptions.map((option) => (
+                  <button
+                    key={option.key}
+                    type="button"
+                    className={selectedLines.includes(option.key) ? "active" : ""}
+                    onClick={() => toggleSelection(option.key)}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
             </div>
-
           </div>
-          <ResponsiveContainer width="100%" height={470}>
-            <LineChart
-              data={selectedDateList}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="timeZone"
-                tickFormatter={(tick) => tick.split("_")[0]}
-              />
-              <YAxis />
-              <Tooltip
-                formatter={(value, name, props) => {
-                  const congestion = getCongestionLevel(
-                    value,
-                    selectedDateList,
-                    props.payload.index
-                  );
-                  return [`${value}명 (${congestion})`, name];
-                }}
-              />
-              <Legend />
-              {selectedLines.map((key, index) => (
-                <Line
-                  key={key}
-                  type="monotone"
-                  dataKey={key}
-                  stroke="blue"
-                  name={lineOptions.find((o) => o.key === key)?.label}
+          <div className="chart-area">
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart
+                data={selectedDateList}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#eee" vertical={false} />
+                <XAxis
+                  dataKey="timeZone"
+                  tickFormatter={(tick) => tick.split("_")[0]}
+                  tick={{ fontSize: 12 }}
                 />
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip
+                  cursor={{ fill: "rgba(120, 187, 223, 0.1)" }}
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload || !payload.length) return null;
+                    const value = payload[0].value;
+                    const name = payload[0].name;
+                    const isNoData = value == null || value === 0;
+                    return (
+                      <div style={{
+                        background: "white",
+                        border: "1px solid #eee",
+                        borderRadius: 10,
+                        padding: "12px 16px",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                        fontSize: 13,
+                      }}>
+                        <p style={{ margin: "0 0 6px", color: "#666", fontWeight: 500 }}>
+                          {label?.split("_")[0]}
+                        </p>
+                        {isNoData ? (
+                          <span style={{
+                            display: "inline-block",
+                            padding: "3px 10px",
+                            borderRadius: 12,
+                            backgroundColor: "#ccc",
+                            color: "white",
+                            fontSize: 12,
+                            fontWeight: 500,
+                          }}>
+                            미운영
+                          </span>
+                        ) : (
+                          <>
+                            <p style={{ margin: "0 0 4px", color: "#333" }}>
+                              {name}: <strong>{value.toLocaleString()}명</strong>
+                            </p>
+                            <span style={{
+                              display: "inline-block",
+                              padding: "3px 10px",
+                              borderRadius: 12,
+                              backgroundColor: getBarColor(value),
+                              color: getBarColor(value) === "#ffc107" ? "#333" : "white",
+                              fontSize: 12,
+                              fontWeight: 500,
+                            }}>
+                              {getCongestionLevel(value, selectedDateList,
+                                selectedDateList.findIndex((d) => d.timeZone === label))}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    );
+                  }}
+                />
+                <Legend
+                  formatter={(value) => (
+                    <span style={{ color: "#333", fontSize: 13, fontWeight: 500 }}>
+                      {value}
+                    </span>
+                  )}
+                />
+                {selectedLines.map((key) => (
+                  <Bar
+                    key={key}
+                    dataKey={key}
+                    radius={[4, 4, 0, 0]}
+                    name={lineOptions.find((o) => o.key === key)?.label}
+                  >
+                    {selectedDateList.map((entry, index) => (
+                      <Cell key={index} fill={getBarColor(entry[key] || 0)} />
+                    ))}
+                  </Bar>
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
       <div className="container">
         <h2>항공편</h2>
 
-        <div className="date-buttons">
-          {[getFormattedDate(), getTomorrowDate(), get2LaterDate()].map((d) => (
-            <button
-              key={d}
-              className={selectedPlaneDate === d ? "active" : ""}
-              onClick={() => setSelectedPlaneDate(d)}
-            >
-              {formatDateTime2(d.substring(4))}
-            </button>
-          ))}
-        </div>
-
-        <div className="searchContainer">
-          <input
-            placeholder="항공편 검색"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="plane-toolbar">
+          <div className="date-buttons">
+            {[getFormattedDate(), getTomorrowDate(), get2LaterDate()].map((d) => (
+              <button
+                key={d}
+                className={selectedPlaneDate === d ? "active" : ""}
+                onClick={() => setSelectedPlaneDate(d)}
+              >
+                {formatDateTime2(d.substring(4))}
+              </button>
+            ))}
+          </div>
+          <div className="searchContainer">
+            <input
+              placeholder="항공편명 검색"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="table-container" onScroll={onScroll}>
@@ -298,6 +352,10 @@ const Home = () => {
           </div>
 
           {isInitialLoading && <Skeleton count={8} height={40} />}
+
+          {!isInitialLoading && filteredPlanes.length === 0 && (
+            <div className="table-empty">조회된 항공편이 없습니다.</div>
+          )}
 
           {filteredPlanes.map((p, index) => (
             <div
