@@ -24,25 +24,27 @@ const ChatRoomInfo = () => {
   const { userInfo } = useContext(LoginContext);
   const { formatDateTime3, formatTime } = useContext(FuncModule);
 
+  const getMessageStyle = (msg, user) => {
+    if (msg?.memberResDto?.username === user?.username) return "mine";
+    return "other";
+  };
+
   const [roomInfo, setRoomInfo] = useState({
     memberResDto: {},
   });
   const [chatInfo, setChatInfo] = useState([]);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [allUserCount, setAllUserCount] = useState(0);
 
   const [roomLoading, setRoomLoading] = useState(true);
   const [chatLoading, setChatLoading] = useState(true);
-
-  const isReady = !roomLoading && !chatLoading;
 
   const stompClientRef = useRef(null);
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
 
   const [userCount, setUserCount] = useState(0);
-  const [isRoomDeleted, setIsRoomDeleted] = useState(false);
+  const isRoomDeletedRef = useRef(false);
   const [isComposing, setIsComposing] = useState(false);
 
 
@@ -90,7 +92,7 @@ const ChatRoomInfo = () => {
 
     try {
       await req.deleteRoom(chatroomId);
-      setIsRoomDeleted(true);
+      isRoomDeletedRef.current = true;
 
       stompClientRef.current?.publish({
         destination: `/topic/chat/delete/${chatroomId}`,
@@ -139,16 +141,8 @@ const ChatRoomInfo = () => {
           }
         });
 
-        // 4. 전체 유저 카운트 관련 구독
-
-        stompClient.subscribe(`/topic/all/userCnt`, (message) => {
-          console.log("[STOMP] 전체 인원 수: ", message.body);
-          setAllUserCount(parseInt(message.body, 10));
-        });
-
         // 인원 수 요청
-        stompClient.publish({ destination: `/app/chatroom/{roomId}/userCnt` });
-        stompClient.publish({ destination: "/app/chat/userCnt" });
+        stompClient.publish({ destination: `/app/chatroom/${chatroomId}/userCnt` });
 
         // 5. 입장 메시지 (세션 기준, 새로고침 시 중복 방지)
         if (!sessionStorage.getItem(`entered-${chatroomId}`)) {
@@ -187,25 +181,34 @@ const ChatRoomInfo = () => {
     stompClient.activate();
     stompClientRef.current = stompClient;
 
+    // 퇴장 메시지 전송 함수 (중복 방지용 플래그)
+    let exitSent = false;
+
+    const sendExitMessage = () => {
+      if (
+        exitSent ||
+        isRoomDeletedRef.current ||
+        !stompClientRef.current ||
+        !stompClientRef.current.connected
+      ) return;
+
+      const exitMessage = {
+        chatType: "EXIT",
+        username: userInfo?.username,
+        nickName: userInfo?.nickName,
+        chatroomId,
+      };
+      stompClientRef.current.publish({
+        destination: "/app/chat/message",
+        body: JSON.stringify(exitMessage),
+      });
+      exitSent = true;
+      console.log("[STOMP] 퇴장 메시지 전송 완료");
+    };
+
     // 6. 브라우저 종료(새로고침, 탭 닫기) 시 퇴장 메시지 전송
     const handleBeforeUnload = () => {
-      if (
-        !isRoomDeleted &&
-        stompClientRef.current &&
-        stompClientRef.current.connected
-      ) {
-        const exitMessage = {
-          chatType: "EXIT",
-          username: userInfo?.username,
-          nickName: userInfo?.nickName,
-          chatroomId,
-        };
-        stompClientRef.current.publish({
-          destination: "/app/chat/message",
-          body: JSON.stringify(exitMessage),
-        });
-        console.log("[STOMP] beforeunload 퇴장 메시지 전송 완료");
-      }
+      sendExitMessage();
       sessionStorage.removeItem(`entered-${chatroomId}`);
     };
 
@@ -216,26 +219,7 @@ const ChatRoomInfo = () => {
       console.log("[STOMP] 채팅방 컴포넌트 unmount");
 
       window.removeEventListener("beforeunload", handleBeforeUnload);
-
-      // useEffect 언마운트 시에는 퇴장 메시지 중복 방지
-      if (
-        !isRoomDeleted &&
-        stompClientRef.current &&
-        stompClientRef.current.connected
-      ) {
-        const exitMessage = {
-          chatType: "EXIT",
-          username: userInfo?.username,
-          nickName: userInfo?.nickName,
-          chatroomId,
-        };
-
-        stompClientRef.current.publish({
-          destination: "/app/chat/message",
-          body: JSON.stringify(exitMessage),
-        });
-        console.log("[STOMP] 언마운트 시 퇴장 메시지 전송 완료");
-      }
+      sendExitMessage();
 
       stompClient.deactivate();
       sessionStorage.removeItem(`entered-${chatroomId}`);
@@ -308,12 +292,8 @@ const ChatRoomInfo = () => {
   }, [chatroomId]);
 
   useEffect(() => {
-    setMessages(
-      chatInfo.filter(
-        (m) => m.chatType !== "ENTER" && m.chatType !== "EXIT"
-      )
-    );
-}, [chatInfo]);
+    setMessages(chatInfo);
+  }, [chatInfo]);
 
 return (
   <div className="chatroom-page">
@@ -367,26 +347,27 @@ return (
             : messages.map((msg, index) => (
               <div
                 key={index}
-                className={`chat-message ${msg?.chatType === "ENTER" || msg?.chatType === "EXIT"
-                  ? "enter-message"
-                  : msg?.memberResDto?.username === userInfo?.username
-                    ? "mine"
-                    : "other"
+                className={`chat-message ${
+                  (msg?.chatType === "ENTER" || msg?.chatType === "EXIT")
+                    ? "enter-message"
+                    : getMessageStyle(msg, userInfo)
                   }`}
               >
-                {msg?.chatType === "ENTER" || msg?.chatType === "EXIT" ? (
+                {(msg?.chatType === "ENTER" || msg?.chatType === "EXIT") && (
                   <div className="enter-message-content">
                     {msg?.memberResDto.nickName}님이{" "}
                     {msg?.chatType === "ENTER" ? "입장하였습니다." : "퇴장하였습니다."}
                   </div>
-                ) : msg?.memberResDto?.username === userInfo?.username ? (
+                )}
+                {msg?.chatType !== "ENTER" && msg?.chatType !== "EXIT" && msg?.memberResDto?.username === userInfo?.username && (
                   <div className="message-wrapper">
                     <div className="message-content">{msg?.content}</div>
                     <div className="message-timestamp mine-timestamp">
                       {formatTime(msg?.createdAt)}
                     </div>
                   </div>
-                ) : (
+                )}
+                {msg?.chatType !== "ENTER" && msg?.chatType !== "EXIT" && msg?.memberResDto?.username !== userInfo?.username && (
                   <div className="message-wrapper">
                     <div className="message-username">
                       {msg?.memberResDto?.name}
