@@ -1,0 +1,209 @@
+.parking-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .parking_label {
+    box-sizing: border-box;
+    display: flex;
+    width: 60%;
+    margin: auto;
+    padding: 20px 0;
+  }
+  
+  .parking_container {
+    width: 100%;
+    padding: 28px;
+    background: white;
+    border-radius: 16px;
+  }
+  
+  .parking_container h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 24px 0;
+    color: #333;
+    padding-bottom: 10px;
+    position: relative;
+  }
+  
+  .parking_container h3::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 3px;
+    background-color: #78bbdf;
+    border-radius: 2px;
+    margin-top: 8px;
+  }
+  
+  .parking_top {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 24px;
+  }
+  
+  .filter_group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .filter_group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+  }
+  
+  .filter_group select {
+    min-width: 160px;
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    outline: none;
+  }
+  
+  .parking_list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  
+  .parking_card {
+    padding: 18px;
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+  
+  .parking_card:hover {
+    background-color: #e8f4fb;
+    border-color: #78bbdf;
+  }
+  
+  .parking_card_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .parking_floor {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .parking_rate {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3a8fc2;
+    background: #eef7fc;
+    border: 1px solid #d6eaf7;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  
+  .parking_count_row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  
+  .parking_count_box {
+    flex: 1;
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #edf1f4;
+  }
+  
+  .parking_count_box p {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .parking_count_box strong {
+    font-size: 18px;
+    color: #222;
+  }
+  
+  .parking_progress_wrap {
+    width: 100%;
+    height: 10px;
+    background: #e9eef2;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  
+  .parking_progress {
+    height: 100%;
+    background: linear-gradient(90deg, #78bbdf, #5aa3cd);
+    border-radius: 999px;
+  }
+  
+  .parking_time {
+    font-size: 12px;
+    color: #888;
+  }
+  
+  .parking_empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 180px;
+    color: #999;
+    font-size: 14px;
+  }
+  
+  @media (max-width: 1200px) {
+    .parking_label {
+      width: 80%;
+    }
+  
+    .parking_list {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .parking_label {
+      width: 92%;
+    }
+  
+    .parking_count_row {
+      flex-direction: column;
+    }
+  
+    .parking_card_header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .parking_map_section {
+    margin-bottom: 28px;
+  }
+  
+  .parking_map_section h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 12px 0;
+  }
+  
+  .parking_map_image {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 14px;
+    border: 1px solid #e5e5e5;
+    background: #fafafa;
+    display: block;
+  }

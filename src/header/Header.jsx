@@ -2,17 +2,17 @@ import Cookies from "js-cookie";
 import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
-import * as req from '../api/req';
+import * as req from "../api/req";
 import inLogo from "../img/Incheon.png";
 import { LoginContext } from "../state/LoginState";
 import "./Header.css";
 
 const Header = () => {
-  const { isLogin, setIsLogin, userInfo, setUserInfo, logincheck } =
+  const { isLogin, setIsLogin, setUserInfo, userInfo, logincheck } =
     useContext(LoginContext);
+
   const navigate = useNavigate();
 
-  // Google 로그인
   const onGoogleLogin = async () => {
     try {
       const response = await req.googleLogin();
@@ -26,7 +26,6 @@ const Header = () => {
     }
   };
 
-  // 로그아웃
   const googleLogout = async () => {
     const check = window.confirm("로그아웃 하시겠습니까?");
     if (check) {
@@ -40,8 +39,6 @@ const Header = () => {
           setIsLogin(false);
           setUserInfo(null);
           navigate("/");
-        } else {
-          console.error("로그아웃 실패");
         }
       } catch (error) {
         console.error("로그아웃 실패:", error.response?.data || error.message);
@@ -49,21 +46,15 @@ const Header = () => {
     }
   };
 
-  const handleHome = () => {
-    navigate("/");
-  }
-
-  const handleEdit = () => {
-    navigate("/editMember");
-  }
+  const handleHome = () => navigate("/");
+  const handleEdit = () => navigate("/editMember");
+  const handleParkingInfo = () => navigate("/parking-info");
+  const handleTransitTime = () => navigate("/transit-time");
+  const handleChatRooms = () => navigate("/chatrooms");
 
   useEffect(() => {
     logincheck();
   }, []);
-
-  useEffect(() => {
-    console.log("로그인 상태 : " + isLogin);
-  }, [isLogin]);
 
   return (
     <header className="headerContainer">
@@ -71,23 +62,38 @@ const Header = () => {
         <img src={inLogo} className="logo" />
         <p>Travel via Incheon Airport !</p>
       </div>
+
       {!isLogin ? (
         <div className="logContainer">
-          <button onClick={() => navigate("/chatrooms")} className="chatBtn">
+          <button onClick={handleTransitTime} className="navBtn">
+            체크인 카운터 이동 소요시간 [공항철도/주차장]
+          </button>
+          <button onClick={handleParkingInfo} className="navBtn">
+            실시간 주차장 정보
+          </button>
+          <button onClick={handleChatRooms} className="navBtn">
             오픈 채팅방
           </button>
-          <button onClick={onGoogleLogin} className="loginButton">
+          <button onClick={onGoogleLogin} className="navBtn">
             Google 로그인
           </button>
         </div>
       ) : (
         <div className="logContainer">
-          <button onClick={() => navigate("/chatrooms")} className="chatBtn">
+          <button onClick={handleTransitTime} className="navBtn">
+            체크인 카운터 이동 소요시간 [공항철도/주차장]
+          </button>
+          <button onClick={handleParkingInfo} className="navBtn">
+            실시간 주차장 정보
+          </button>
+          <button onClick={handleChatRooms} className="navBtn">
             오픈 채팅방
           </button>
-          <p className="loginName">환영해요 {userInfo?.name} 님 !</p>
-          <p className="edit_member" onClick={handleEdit}>회원 정보 수정</p>
-          <button onClick={googleLogout} className="logoutButton">
+          <p className="navText">환영해요 {userInfo?.name} 님 !</p>
+          <p className="navLink" onClick={handleEdit}>
+            마이페이지
+          </p>
+          <button onClick={googleLogout} className="navBtn danger">
             로그아웃
           </button>
         </div>

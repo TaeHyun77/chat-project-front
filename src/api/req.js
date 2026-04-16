@@ -46,3 +46,9 @@ export const isNickName = (editNickName) => api.get(`/api/isNickName/${editNickN
 
 // 닉네임 수정
 export const editNickName = (id, editNickName) => api.post(`/api/edit/${id}/${editNickName}`);
+
+export const getArexTransitTime = () => api.get("/api/airport/transit/arex");
+
+export const getParkingTransitTime = () => api.get("/api/airport/transit/parking");
+
+export const getParkingInfo = () => api.get("/api/airport/parking");
