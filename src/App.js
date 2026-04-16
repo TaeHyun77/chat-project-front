@@ -5,6 +5,8 @@ import LoginState from "./state/LoginState";
 import FuncList from "./state/FuncList";
 import Home from "./Home";
 import EditMember from "./edit/EditMember";
+import TransitTimePage from "./Transit/TransitTimePage";
+import ParkingInfo from "./parking/ParkingInfo";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
               <Route path="/chatrooms" element={<ChatRooms />} />
               <Route path="/" element={<Home />} />
               <Route path="/editMember" element={<EditMember />} />
+              <Route path="/transit-time" element={<TransitTimePage />} />
+              <Route path="/parking-info" element={<ParkingInfo />} />
             </Routes>
           </FuncList>
       </LoginState>

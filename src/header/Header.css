@@ -19,7 +19,6 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-/* 왼쪽: 로고 + 텍스트 */
 .logoContainer {
   display: flex;
   align-items: center;
@@ -39,11 +38,11 @@
   height: auto;
 }
 
-/* 오른쪽: 버튼 영역 */
 .logContainer {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .loginName {
@@ -53,12 +52,11 @@
   white-space: nowrap;
 }
 
-/* 공통 버튼 스타일 */
-.chatBtn,
-.loginButton,
-.logoutButton {
+.navBtn {
   padding: 8px 16px;
-  border: none;
+  background-color: #f0f7fb;
+  color: #3a8fc2;
+  border: 1px solid #c4dff0;
   border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
@@ -67,47 +65,100 @@
   white-space: nowrap;
 }
 
-.chatBtn {
-  background-color: #f0f7fb;
-  color: #3a8fc2;
-  border: 1px solid #c4dff0;
-}
-
-.chatBtn:hover {
+.navBtn:hover {
   background-color: #daedf7;
   border-color: #78bbdf;
 }
 
-.loginButton {
-  background-color: #78bbdf;
-  color: white;
-}
-
-.loginButton:hover {
-  background-color: #5aa3cd;
-}
-
-.logoutButton {
-  background-color: #f8f8f8;
+.navBtn.danger {
+  background-color: #fff;
   color: #e04555;
   border: 1px solid #f0d0d0;
 }
 
-.logoutButton:hover {
+.navBtn.danger:hover {
   background-color: #fdeaea;
   border-color: #e04555;
 }
 
 .edit_member {
+  padding: 8px 16px;
+  background-color: #f0f7fb;
+  color: #3a8fc2;
+  border: 1px solid #c4dff0;
+  border-radius: 8px;
+  cursor: pointer;
   font-size: 13px;
   font-weight: 500;
-  color: #78bbdf;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.edit_member:hover {
+  background-color: #daedf7;
+  border-color: #78bbdf;
+  text-decoration: none;
+}
+
+@media (max-width: 1200px) {
+  .headerContainer {
+    width: 80%;
+    padding: 14px 20px;
+  }
+
+  .logo {
+    width: 100px;
+  }
+
+  .logoContainer p {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerContainer {
+    width: 92%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .logContainer {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .navBtn,
+  .edit_member {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .loginName {
+    font-size: 13px;
+  }
+}
+
+.navText {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.navLink {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
   cursor: pointer;
+  margin: 0;
   white-space: nowrap;
   transition: color 0.2s;
 }
 
-.edit_member:hover {
+.navLink:hover {
   color: #3a8fc2;
   text-decoration: underline;
 }
