@@ -16,7 +16,7 @@
 }
 
 .container span {
-  font-size: 18px;
+  font-size: 15px;
 }
 
 h2 {
@@ -52,7 +52,8 @@ h2::after {
 
 .chart-filters {
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap;
+  gap: 36px;
   padding: 16px 20px;
   background-color: #f8f9fa;
   border-radius: 12px;
@@ -65,9 +66,6 @@ h2::after {
   gap: 8px;
 }
 
-.filter-group:last-child {
-  flex: 1;
-}
 
 .filter-label {
   font-size: 13px;
@@ -77,6 +75,7 @@ h2::after {
 
 .date-buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
@@ -105,14 +104,33 @@ h2::after {
   font-weight: bold;
 }
 
+.terminal-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.terminal-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.terminal-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  min-width: 22px;
+}
+
 .place-buttons {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
 .place-buttons button {
-  padding: 8px 0;
+  padding: 8px 16px;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
   background-color: white;
@@ -192,13 +210,30 @@ h2::after {
 
 .plane-toolbar {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
   margin-bottom: 16px;
 }
 
+.yesterday-notice {
+  margin: 0 0 12px;
+  padding: 10px 16px;
+  background-color: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #f57f17;
+  font-weight: 500;
+}
+
+.searchContainer {
+  position: relative;
+}
+
 .searchContainer input {
-  width: 180px;
+  width: 220px;
   height: 36px;
   padding: 0 12px;
   border-radius: 10px;
@@ -210,6 +245,35 @@ h2::after {
 
 .searchContainer input:focus {
   border-color: #78bbdf;
+}
+
+.home_autocomplete_list {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 280px;
+  list-style: none;
+  padding: 6px 0;
+  margin: 6px 0 0 0;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: white;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+.home_autocomplete_list li {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #333;
+}
+
+.home_autocomplete_list li:hover {
+  background: #f0f7fb;
+  color: #3a8fc2;
 }
 
 .table-container {
@@ -233,7 +297,7 @@ h2::after {
 .table-header,
 .data-row {
   display: grid;
-  grid-template-columns: 1.2fr 1.2fr 0.8fr 0.8fr 1fr 1fr 1.5fr;
+  grid-template-columns: 1fr 1fr 1fr 0.7fr 0.7fr 0.7fr 0.8fr 1.5fr;
   align-items: center;
   text-align: center;
   padding: 0 16px;

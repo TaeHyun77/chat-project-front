@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
@@ -12,22 +12,38 @@ import { LoginContext } from "./state/LoginState";
 
 const PAGE_SIZE = 20;
 
-const lineOptions = [
-  { key: "t1Depart1", label: "T1 (1번 출국장)" },
-  { key: "t1Depart2", label: "T1 (2번 출국장)" },
-  { key: "t1Depart3", label: "T1 (3번 출국장)" },
-  { key: "t1Depart4", label: "T1 (4번 출국장)" },
-  { key: "t1Depart5", label: "T1 (5번 출국장)" },
-  { key: "t1Depart6", label: "T1 (6번 출국장)" },
-  { key: "t2Depart1", label: "T2 (1번 출국장)" },
-  { key: "t2Depart2", label: "T2 (2번 출국장)" },
+const terminalGroups = [
+  {
+    terminal: "T1",
+    options: [
+      { key: "t1Depart1", label: "1번" },
+      { key: "t1Depart2", label: "2번" },
+      { key: "t1Depart3", label: "3번" },
+      { key: "t1Depart4", label: "4번" },
+      { key: "t1Depart5", label: "5번" },
+      { key: "t1Depart6", label: "6번" },
+    ],
+  },
+  {
+    terminal: "T2",
+    options: [
+      { key: "t2Depart1", label: "1번" },
+      { key: "t2Depart2", label: "2번" },
+    ],
+  },
 ];
+
+// 차트 Legend용 전체 옵션 (label에 터미널 포함)
+const allLineOptions = terminalGroups.flatMap((g) =>
+  g.options.map((o) => ({ ...o, label: `${g.terminal} ${o.label} 출국장` }))
+);
 
 const Home = () => {
   const navigate = useNavigate();
   const { isLogin } = useContext(LoginContext);
 
   const {
+    getYesterdayDate,
     getFormattedDate,
     getTomorrowDate,
     get2LaterDate,
@@ -57,6 +73,9 @@ const Home = () => {
     getFormattedDate()
   );
   const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
 
   const getDepartureData = async () => {
     try {
@@ -114,10 +133,49 @@ const Home = () => {
 
 
   const onScroll = (e) => {
+    if (searchTerm.trim()) return;
     const { scrollTop, scrollHeight, clientHeight } = e.target;
 
     if (scrollHeight - scrollTop <= clientHeight + 20) {
       getPlanes();
+    }
+  };
+
+  const handleAutoComplete = async (value) => {
+    console.log("selectedPlaneDate : " + selectedPlaneDate)
+    setSearchTerm(value);
+
+    if (!value.trim()) {
+      setSuggestions([]);
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      const res = await req.autocompleteFlights(value, selectedPlaneDate);
+      setSuggestions(res.data || []);
+    } catch (err) {
+      console.error("자동완성 실패", err);
+    }
+  };
+
+  const handleSearch = async (keyword) => {
+    const q = keyword ?? searchTerm;
+    if (!q.trim()) return;
+
+    setSuggestions([]);
+    setIsSearchLoading(true);
+
+    try {
+      const res = await req.searchFlights({
+        q,
+        date: selectedPlaneDate || undefined,
+      });
+      setSearchResults(res.data || []);
+    } catch (err) {
+      console.error("항공편 검색 실패:", err);
+    } finally {
+      setIsSearchLoading(false);
     }
   };
 
@@ -140,9 +198,22 @@ const Home = () => {
     return "#f44336";
   };
 
-  const filteredPlanes = (planes ?? []).filter((p) =>
-    p.flightId?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const isSearchMode = searchTerm.trim().length > 0;
+
+  const sortedSearchResults = useMemo(() => {
+    return [...searchResults].sort((a, b) =>
+      String(a.scheduleDateTime).localeCompare(String(b.scheduleDateTime))
+    );
+  }, [searchResults]);
+
+  const isYesterday = selectedPlaneDate === getYesterdayDate();
+
+  const filteredPlanes = useMemo(() => {
+    if (!isYesterday) return planes;
+    return planes.filter((p) => p.remark !== "출발");
+  }, [planes, isYesterday]);
+
+  const displayPlanes = isSearchMode ? sortedSearchResults : filteredPlanes;
 
   useEffect(() => {
     getDepartureData();
@@ -153,6 +224,9 @@ const Home = () => {
   }, [selectedDate]);
 
   useEffect(() => {
+    setSearchTerm("");
+    setSuggestions([]);
+    setSearchResults([]);
     setPlanes([]);
     setPage(0);
     setHasNext(true);
@@ -211,16 +285,23 @@ const Home = () => {
             </div>
             <div className="filter-group">
               <span className="filter-label">출국장</span>
-              <div className="place-buttons">
-                {lineOptions.map((option) => (
-                  <button
-                    key={option.key}
-                    type="button"
-                    className={selectedLines.includes(option.key) ? "active" : ""}
-                    onClick={() => toggleSelection(option.key)}
-                  >
-                    {option.label}
-                  </button>
+              <div className="terminal-groups">
+                {terminalGroups.map((group) => (
+                  <div key={group.terminal} className="terminal-group">
+                    <span className="terminal-label">{group.terminal}</span>
+                    <div className="place-buttons">
+                      {group.options.map((option) => (
+                        <button
+                          key={option.key}
+                          type="button"
+                          className={selectedLines.includes(option.key) ? "active" : ""}
+                          onClick={() => toggleSelection(option.key)}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -304,7 +385,7 @@ const Home = () => {
                     key={key}
                     dataKey={key}
                     radius={[4, 4, 0, 0]}
-                    name={lineOptions.find((o) => o.key === key)?.label}
+                    name={allLineOptions.find((o) => o.key === key)?.label}
                   >
                     {selectedDateList.map((entry, index) => (
                       <Cell key={index} fill={getBarColor(entry[key] || 0)} />
@@ -321,29 +402,61 @@ const Home = () => {
 
         <div className="plane-toolbar">
           <div className="date-buttons">
-            {[getFormattedDate(), getTomorrowDate(), get2LaterDate()].map((d) => (
+            {[getYesterdayDate(), getFormattedDate(), getTomorrowDate(), get2LaterDate()].map((d) => (
               <button
                 key={d}
                 className={selectedPlaneDate === d ? "active" : ""}
                 onClick={() => setSelectedPlaneDate(d)}
               >
-                {formatDateTime2(d.substring(4))}
+                {d === getYesterdayDate() ? "어제" : formatDateTime2(d.substring(4))}
               </button>
             ))}
           </div>
           <div className="searchContainer">
             <input
-              placeholder="항공편명 검색"
+              placeholder="편명, 항공사, 공항 검색"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => handleAutoComplete(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearch();
+              }}
             />
+            {suggestions.length > 0 && (
+              <ul className="home_autocomplete_list">
+                {suggestions.map((s, idx) => {
+                  const parts = s.split(" | ");
+                  const displayText = parts.length >= 4
+                    ? `${parts[0]} | ${parts[1]} | ${parts[2]} | ${formatDateTime(parts[3])}`
+                    : s;
+                  return (
+                    <li
+                      key={idx}
+                      onClick={() => {
+                        setSearchTerm(parts[0]);
+                        setSuggestions([]);
+                        handleSearch(parts[0]);
+                      }}
+                    >
+                      {displayText}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         </div>
+
+        {selectedPlaneDate === getYesterdayDate() && (
+          <p className="yesterday-notice">
+            이 목록에 없는 항공편은 이미 출발한 항공편입니다.
+          </p>
+        )}
 
         <div className="table-container" onScroll={onScroll}>
           <div className="table-header">
             <div>항공편명</div>
             <div>항공사</div>
+            <div>목적지</div>
             <div>탑승구</div>
             <div>터미널</div>
             <div>상태</div>
@@ -351,19 +464,20 @@ const Home = () => {
             <div>시간</div>
           </div>
 
-          {isInitialLoading && <Skeleton count={8} height={40} />}
+          {(isInitialLoading || isSearchLoading) && <Skeleton count={8} height={40} />}
 
-          {!isInitialLoading && filteredPlanes.length === 0 && (
+          {!isInitialLoading && !isSearchLoading && displayPlanes.length === 0 && (
             <div className="table-empty">조회된 항공편이 없습니다.</div>
           )}
 
-          {filteredPlanes.map((p, index) => (
+          {!isSearchLoading && displayPlanes.map((p, index) => (
             <div
               key={`${p.flightId}-${p.scheduleDateTime}-${index}`}
               className="data-row"
             >
               <div data-label="항공편명">{p.flightId}</div>
               <div data-label="항공사">{p.airLine}</div>
+              <div data-label="목적지">{p.airport}</div>
               <div data-label="탑승구">{p.gatenumber || "미정"}</div>
               <div data-label="터미널">{p.terminalid}</div>
               <div data-label="상태">{p.remark === "null" ? "예정" : p.remark}</div>
@@ -378,7 +492,7 @@ const Home = () => {
             </div>
           ))}
 
-          {isFetching && <Skeleton count={3} height={40} />}
+          {!isSearchMode && isFetching && <Skeleton count={3} height={40} />}
         </div>
 
       </div>

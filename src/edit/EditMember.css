@@ -4,91 +4,16 @@
   min-height: 100vh;
 }
 
-/* 전체 레이아웃 */
-.edit_label {
-  box-sizing: border-box;
-  display: flex;
-  width: 60%;
-  margin: auto;
-  padding: 20px 0;
-  gap: 20px;
-  align-items: stretch;
-}
-
-/* 왼쪽: 회원정보 수정 */
-.edit_container {
-  flex: 1;
-  padding: 28px;
-  background: white;
-  border-radius: 16px;
-}
-
-.edit_container h3 {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0 0 24px 0;
-  color: #333;
-  padding-bottom: 10px;
-  position: relative;
-}
-
-.edit_container h3::after {
-  content: "";
-  display: block;
-  width: 40px;
-  height: 3px;
-  background-color: #78bbdf;
-  border-radius: 2px;
-  margin-top: 8px;
-}
-
-.form-group,
-.form_group {
-  margin-bottom: 20px;
-}
-
-.form-group label,
-.form_group label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #666;
-}
-
-.edit_container input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 10px 14px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.edit_container input:focus {
-  border-color: #78bbdf;
-}
-
-.edit_container input:disabled {
-  background: #f8f9fa;
-  color: #999;
-  border-color: #eee;
-}
-
-.edit_group {
+/* 탭 그룹 */
+.edit_tab_group {
   display: flex;
   gap: 8px;
-  margin-bottom: 8px;
+  width: 60%;
+  margin: 20px auto 0;
 }
 
-.edit_group input {
-  flex: 1;
-}
-
-.distinctBtn {
-  padding: 8px 16px;
+.edit_tab_btn {
+  padding: 10px 16px;
   background-color: #f0f7fb;
   color: #3a8fc2;
   border: 1px solid #c4dff0;
@@ -96,115 +21,37 @@
   font-weight: 500;
   border-radius: 10px;
   cursor: pointer;
-  white-space: nowrap;
   transition: all 0.2s;
 }
 
-.distinctBtn:hover {
+.edit_tab_btn:hover {
   background-color: #daedf7;
   border-color: #78bbdf;
 }
 
-.save-btn {
-  width: 100%;
-  margin-top: 24px;
-  padding: 12px;
+.edit_tab_btn.active {
   background-color: #78bbdf;
   color: white;
-  font-size: 14px;
-  font-weight: 500;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.save-btn:hover {
-  background-color: #5aa3cd;
-}
-
-/* 오른쪽: 생성한 채팅방 */
-.member_chatRoom {
-  flex: 1;
-  padding: 28px;
-  background: white;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-}
-
-.member_chatRoom h3 {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0 0 20px 0;
-  color: #333;
-  padding-bottom: 10px;
-  position: relative;
-}
-
-.member_chatRoom h3::after {
-  content: "";
-  display: block;
-  width: 40px;
-  height: 3px;
-  background-color: #78bbdf;
-  border-radius: 2px;
-  margin-top: 8px;
-}
-
-.room-list {
-  flex: 1;
-}
-
-.member-chatrooms-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  max-height: 400px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.member-chatrooms-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.member-chatrooms-list::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 3px;
-}
-
-.member-chatrooms-list li {
-  display: flex;
-  align-items: center;
-  padding: 14px 16px;
-  background: #f8f9fa;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.member-chatrooms-list li:hover {
-  background-color: #e8f4fb;
   border-color: #78bbdf;
 }
 
-.chatroom-empty {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 150px;
-  color: #999;
-  font-size: 14px;
+/* 탭 콘텐츠 영역 */
+.edit_content {
+  width: 60%;
+  margin: 20px auto;
+  flex: 1;
 }
 
 @media (max-width: 1200px) {
-  .edit_label {
-    flex-direction: column;
+  .edit_tab_group,
+  .edit_content {
     width: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  .edit_tab_group,
+  .edit_content {
+    width: 92%;
   }
 }

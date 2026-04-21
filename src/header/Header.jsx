@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import * as req from "../api/req";
@@ -12,6 +12,8 @@ const Header = () => {
     useContext(LoginContext);
 
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const onGoogleLogin = async () => {
     try {
@@ -48,12 +50,32 @@ const Header = () => {
 
   const handleHome = () => navigate("/");
   const handleEdit = () => navigate("/editMember");
-  const handleParkingInfo = () => navigate("/parking-info");
-  const handleTransitTime = () => navigate("/transit-time");
-  const handleChatRooms = () => navigate("/chatrooms");
+  const handleParkingInfo = () => {
+    navigate("/parking-info");
+    setIsMenuOpen(false);
+  };
+  const handleTransitTime = () => {
+    navigate("/transit-time");
+    setIsMenuOpen(false);
+  };
+  const handleChatRooms = () => {
+    navigate("/chatrooms");
+    setIsMenuOpen(false);
+  };
 
   useEffect(() => {
     logincheck();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -65,34 +87,64 @@ const Header = () => {
 
       {!isLogin ? (
         <div className="logContainer">
-          <button onClick={handleTransitTime} className="navBtn">
-            체크인 카운터 이동 소요시간 [공항철도/주차장]
-          </button>
-          <button onClick={handleParkingInfo} className="navBtn">
-            실시간 주차장 정보
-          </button>
-          <button onClick={handleChatRooms} className="navBtn">
-            오픈 채팅방
-          </button>
+          <div className="dropdownWrapper" ref={dropdownRef}>
+            <button
+              className="navBtn"
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+            >
+              메뉴 ▼
+            </button>
+
+            {isMenuOpen && (
+              <div className="dropdownMenu">
+                <button onClick={handleTransitTime} className="dropdownItem">
+                  체크인 카운터 이동 소요시간
+                </button>
+                <button onClick={handleParkingInfo} className="dropdownItem">
+                  실시간 주차장 정보
+                </button>
+                <button onClick={handleChatRooms} className="dropdownItem">
+                  오픈 채팅방
+                </button>
+              </div>
+            )}
+          </div>
+
           <button onClick={onGoogleLogin} className="navBtn">
             Google 로그인
           </button>
         </div>
       ) : (
         <div className="logContainer">
-          <button onClick={handleTransitTime} className="navBtn">
-            체크인 카운터 이동 소요시간 [공항철도/주차장]
-          </button>
-          <button onClick={handleParkingInfo} className="navBtn">
-            실시간 주차장 정보
-          </button>
-          <button onClick={handleChatRooms} className="navBtn">
-            오픈 채팅방
-          </button>
           <p className="navText">환영해요 {userInfo?.name} 님 !</p>
-          <p className="navLink" onClick={handleEdit}>
+
+          <p className="navBtn" onClick={handleEdit}>
             마이페이지
           </p>
+
+          <div className="dropdownWrapper" ref={dropdownRef}>
+            <button
+              className="navBtn"
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+            >
+              메뉴 ▼
+            </button>
+
+            {isMenuOpen && (
+              <div className="dropdownMenu">
+                <button onClick={handleTransitTime} className="dropdownItem">
+                  체크인 카운터 이동 소요시간
+                </button>
+                <button onClick={handleParkingInfo} className="dropdownItem">
+                  실시간 주차장 정보
+                </button>
+                <button onClick={handleChatRooms} className="dropdownItem">
+                  오픈 채팅방
+                </button>
+              </div>
+            )}
+          </div>
+
           <button onClick={googleLogout} className="navBtn danger">
             로그아웃
           </button>
