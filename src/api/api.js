@@ -37,7 +37,7 @@ api.interceptors.response.use(
         console.log("재발급 요청 중 ..");
         console.log("refreshAuthorization 값:", refreshAuthorization);
 
-        const response = await axios.post(
+        const response = await api.post(
           `/api/reToken`,
           {},
           {

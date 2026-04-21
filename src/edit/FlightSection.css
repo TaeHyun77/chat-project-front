@@ -1,0 +1,321 @@
+/* 항공편 섹션 레이아웃 */
+.flight_section_wrapper {
+  margin-bottom: 20px;
+}
+
+.flight_search_section {
+  background: white;
+  border-radius: 16px;
+  padding: 28px;
+}
+
+.flight_search_section h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 24px 0;
+  color: #333;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.flight_search_section h3::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 3px;
+  background-color: #78bbdf;
+  border-radius: 2px;
+  margin-top: 8px;
+}
+
+.flight_search_section input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.flight_search_section input:focus {
+  border-color: #78bbdf;
+  box-shadow: 0 0 0 3px rgba(120, 187, 223, 0.12);
+}
+
+.flight_search_group {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.flight_input_box {
+  flex: 1;
+  position: relative;
+}
+
+.flight_search_group > input {
+  width: 260px;
+  flex: none;
+}
+
+.flight_search_group .distinctBtn {
+  padding: 8px 16px;
+  background-color: #f0f7fb;
+  color: #3a8fc2;
+  border: 1px solid #c4dff0;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.flight_search_group .distinctBtn:hover {
+  background-color: #daedf7;
+  border-color: #78bbdf;
+}
+
+.autocomplete_list {
+  list-style: none;
+  padding: 6px 0;
+  margin: 6px 0 0 0;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: white;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.autocomplete_list li {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.autocomplete_list li:hover {
+  background: #f0f7fb;
+  color: #3a8fc2;
+}
+
+.flight_result_list {
+  margin-top: 12px;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 480px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.flight_result_list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.flight_result_list::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+.flight_card {
+  padding: 14px 16px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fafafa;
+  transition: all 0.2s ease;
+}
+
+.flight_card:hover {
+  background-color: #e8f4fb;
+  border-color: #78bbdf;
+}
+
+.flight_card_top {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 6px;
+  color: #222;
+  font-size: 15px;
+  flex-wrap: wrap;
+}
+
+.flight_airport {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.flight_meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.flight_subscribe {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.subscribe_btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid #c4dff0;
+  border-radius: 8px;
+  background-color: #78bbdf;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.subscribe_btn:hover {
+  background-color: #5aa3cd;
+}
+
+.unsubscribe_btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid #e57373;
+  border-radius: 8px;
+  background-color: #ef5350;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.unsubscribe_btn:hover {
+  background-color: #d32f2f;
+  border-color: #d32f2f;
+}
+
+.flight-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px;
+  color: #999;
+  font-size: 14px;
+}
+
+/* 날씨 정보 */
+.flight_weather_section {
+  margin-top: 10px;
+  background: #e8f4fb;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.weather_header {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3a8fc2;
+  margin-bottom: 10px;
+}
+
+.weather_hourly_scroll {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+
+.weather_hourly_scroll::-webkit-scrollbar {
+  height: 5px;
+}
+
+.weather_hourly_scroll::-webkit-scrollbar-thumb {
+  background-color: #b8d8eb;
+  border-radius: 3px;
+}
+
+.weather_hourly_item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 58px;
+  padding: 8px 6px;
+  background: white;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.hourly_time {
+  font-size: 11px;
+  color: #888;
+  font-weight: 500;
+}
+
+.hourly_icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.hourly_temp {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+.hourly_desc {
+  font-size: 10px;
+  color: #666;
+  white-space: nowrap;
+}
+
+.hourly_precip {
+  font-size: 10px;
+  color: #3a8fc2;
+  font-weight: 500;
+}
+
+.weather_loading {
+  color: #999;
+  font-size: 13px;
+}
+
+.weather_error {
+  color: #c0392b;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .flight_search_group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .flight_search_group > input {
+    width: 100%;
+  }
+
+  .flight_meta {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .flight_card_top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .weather_hourly_item {
+    min-width: 52px;
+    padding: 6px 4px;
+  }
+}

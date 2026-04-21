@@ -4,6 +4,16 @@ export const FuncModule = createContext();
 
 const FuncList = ({ children }) => {
 
+  // 어제 날짜를 YYYYMMDD 형식으로 반환하는 함수
+  const getYesterdayDate = () => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const year = yesterday.getFullYear();
+    const month = String(yesterday.getMonth() + 1).padStart(2, "0");
+    const day = String(yesterday.getDate()).padStart(2, "0");
+    return `${year}${month}${day}`;
+  };
+
   // 오늘 날짜를 YYYYMMDD 형식으로 반환하는 함수
   const getFormattedDate = () => {
     const today = new Date();
@@ -123,6 +133,7 @@ const FuncList = ({ children }) => {
   return (
     <FuncModule.Provider
       value={{
+        getYesterdayDate,
         getFormattedDate,
         getTomorrowDate,
         get2LaterDate,
